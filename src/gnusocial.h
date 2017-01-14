@@ -284,3 +284,21 @@ int get_number_of_groups(struct gss_account account);
  */
 void init_account(struct gss_account * acc, char * protocol,
                   char * user, char * server, char * password);
+
+/**
+ * @brief Print account information to the console
+ * @param info Account information
+ */
+void print_user_info(struct account_info info);
+
+/**
+ * @brief Print group information to the console
+ * @param group group information
+ */
+void print_group_info(struct group_info group);
+
+/**
+ * @brief Print little group information to the console
+ * @param group little group information
+ */
+void print_little_group_info(struct little_group_info group);

@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     init_account(&acc, "https", "username", "domain_name", "password");
     if (verify_account(acc) == -1) return 1;
 
-    info = get_my_account_info(main_account, &result);
+    info = get_my_account_info(acc, &result);
     if (!result) {
         print_user_info(info);
     }
