@@ -47,3 +47,9 @@ int main(int argc, char **argv)
     return 0;
 }
 ```
+
+Compile with:
+
+``` bash
+gcc -Wall -std=gnu99 -pedantic -O3 -o test *.c -I/usr/local/include/libgnusocial -lcurl -lgnusocial
+```
