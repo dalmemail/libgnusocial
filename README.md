@@ -42,7 +42,11 @@ int main(int argc, char **argv)
 
     info = get_my_account_info(acc, &result);
     if (!result) {
-        print_user_info(info);
+        printf("Name: %s\nNick: %s\nLocation: %s\nDescription: %s\n" \
+               "Web: %s\nFollowers: %d\nFriends: %d\n",
+               (char*)info.name, (char*)info.screen_name,
+               (char*)info.location, (char*)info.description,
+               (char*)info.url, info.followers, info.friends);
     }
     return 0;
 }
