@@ -1,4 +1,4 @@
-This library can be used to integrate GNU Social with other applications.
+This library can be used to integrate GNU Social with other applications. It is based upon the functions from [GnuSocialShell](https://github.com/dalmemail/GnuSocialShell) by Dan Rulos.
 
 # Installation
 
@@ -25,7 +25,7 @@ sudo make install
 
 # Examples
 
-To show your profile information.
+To show your profile information:
 
 ``` C
 #include <stdio.h>
@@ -52,8 +52,58 @@ int main(int argc, char **argv)
 }
 ```
 
+To publish a post:
+
+``` C
+#include <stdio.h>
+#include <gnusocial.h>
+
+int main(int argc, char **argv)
+{
+    struct gss_account acc;
+
+    init_account(&acc, "https", "username", "domain_name", "password");
+    if (verify_account(acc) == -1) return 1;
+    send_status(acc, "g'day world!");
+
+    return 0;
+}
+```
+
+To read the last few posts in your home timeline. You can also use the constant *PUBLIC_TIMELINE* to show all posts from the server rather than just the ones associated with your account.
+
+``` C
+#include <stdio.h>
+#include <gnusocial.h>
+
+int main(int argc, char **argv)
+{
+    struct gss_account acc;
+    struct status * posts;
+    const int no_of_posts = 5;
+    int i;
+
+    init_account(&acc, "https", "username", "domain_name", "password");
+    if (verify_account(acc) == -1) return 1;
+    posts = read_timeline(acc, HOME_TIMELINE, no_of_posts);
+    for (i = 0; i < no_of_posts; i++) {
+        printf("[ID: %d] [%s] [%s] %s\n",
+               posts[i].id, posts[i].date,
+               posts[i].author_screen_name, (char*)posts[i].text);
+    }
+
+    return 0;
+}
+```
+
 Compile with:
 
 ``` bash
 gcc -Wall -std=gnu99 -pedantic -O3 -o test *.c -I/usr/local/include/libgnusocial -lcurl -lgnusocial
+```
+
+For a complete list of the functions available see the manpage.
+
+``` bash
+man libgnusocial
 ```
