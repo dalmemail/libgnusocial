@@ -5,7 +5,7 @@ This library can be used to integrate GNU Social with other applications. It is 
 On Debian based systems:
 
 ``` bash
-sudo apt-get install curl libcurl-dev
+sudo apt-get install curl libcurl4-openssl-dev
 ```
 
 On Arch/Parabola
