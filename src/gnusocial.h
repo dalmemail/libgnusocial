@@ -15,6 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef GNU_SOCIAL_H
+#define GNU_SOCIAL_H
+
 #include <string.h>
 #include <stdio.h>
 
@@ -302,3 +305,5 @@ void print_group_info(struct group_info group);
  * @param group little group information
  */
 void print_little_group_info(struct little_group_info group);
+
+#endif
