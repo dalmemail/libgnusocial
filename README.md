@@ -96,6 +96,39 @@ int main(int argc, char **argv)
 }
 ```
 
+To list your friend subscriptions:
+
+``` C
+#include <stdio.h>
+#include <gnusocial.h>
+
+int main(int argc, char **argv)
+{
+    struct gss_account acc;
+
+    if (argc < 2) {
+        printf("No username given\n");
+        return 1;
+    }
+
+    if (argc < 3) {
+        printf("No gnusocial domain name given\n");
+        return 2;
+    }
+
+    if (argc < 4) {
+        printf("No gnusocial password given\n");
+        return 3;
+    }
+
+    init_account(&acc, "https", argv[1], argv[2], argv[3]);
+    if (verify_account(acc) == -1) return 1;
+    print_users_array_info(acc, "statuses/friends.xml", 9999);
+
+    return 0;
+}
+```
+
 Compile with:
 
 ``` bash
