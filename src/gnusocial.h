@@ -306,4 +306,18 @@ void print_group_info(struct group_info group);
  */
 void print_little_group_info(struct little_group_info group);
 
+/**
+ * @brief Export followed users to a text file
+ * @param account Account structure
+ * @param filename File to be created
+ */
+void export_users(struct gss_account account, char *filename);
+
+/**
+ * @brief Import users from a text file
+ * @param account Account structure
+ * @param filename File containing exported user follows
+ */
+void import_users(struct gss_account account, char *filename);
+
 #endif
