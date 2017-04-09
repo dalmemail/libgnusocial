@@ -122,7 +122,7 @@ int main(int argc, char **argv)
     }
 
     init_account(&acc, "https", argv[1], argv[2], argv[3]);
-    if (verify_account(acc) == -1) return 1;
+    if (verify_account(acc) == -1) return 4;
     print_users_array_info(acc, "statuses/friends.xml", 9999);
 
     return 0;
