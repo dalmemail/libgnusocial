@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
- * 
+ * Copyright (C) 2016, 2017 Daniel Martín
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -28,22 +28,27 @@ void answer_status_by_id(struct gss_account account, int id, char *msg)
 {
         /* cURL functionality used just to URIencode the msg */
         CURL *curl = curl_easy_init();
-	if(curl) {
+    if(curl) {
                 char *encoded_msg = curl_easy_escape(curl, msg, strlen(msg));
-		if(encoded_msg) {
-		        /* margin to fit the ID is included */
+        if(encoded_msg) {
+                /* margin to fit the ID is included */
                         int amount = 68+strlen(encoded_msg);
-			char *send = malloc(amount);
-			snprintf(send, amount, "in_reply_to_status_id=%d&source=GnuSocialShell&status=%s", id, encoded_msg);
-			if (loglevel >= LOG_DEBUG) { // OK?
-			        fprintf(stderr, "in_reply_to_status_id=%d&source=GnuSocialShell&status=%s\n", id, encoded_msg);
-			}
-			// send[sizeof(send)-1] = '\0'; // snprintf does that too
-			char *xml_data = send_to_api(account, send, "statuses/update.xml");
-			FindXmlError(xml_data, strlen(xml_data));
-			free(xml_data);
-			free(send);
-		        curl_free(encoded_msg);
-		}
-	}
+            char *send = malloc(amount);
+            snprintf(send, amount, "in_reply_to_status_id=%d&source=GnuSocialShell&status=%s", id, encoded_msg);
+            if (loglevel >= LOG_DEBUG) { // OK?
+                    fprintf(stderr, "in_reply_to_status_id=%d&source=GnuSocialShell&status=%s\n", id, encoded_msg);
+            }
+            // send[sizeof(send)-1] = '\0'; // snprintf does that too
+            char *xml_data = send_to_api(account, send, "statuses/update.xml");
+            int xml_data_size = strlen(xml_data);
+            if (FindXmlError(xml_data, strlen(xml_data)) < 0 && parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
+                struct status posted_status;
+                posted_status = makeStatusFromRawSource(xml_data, xml_data_size);
+                print_status(posted_status);
+            }
+            free(xml_data);
+            free(send);
+                curl_free(encoded_msg);
+        }
+    }
 }
