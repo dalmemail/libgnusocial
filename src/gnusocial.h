@@ -32,6 +32,8 @@ struct account_info {
     int followers;
     int friends;
     int statuses;
+    char profile_image_url[MAX_URL];
+    char profile_image_url_profile_size[MAX_URL];
 };
 
 struct gss_account {
@@ -319,5 +321,25 @@ void export_users(struct gss_account account, char *filename);
  * @param filename File containing exported user follows
  */
 void import_users(struct gss_account account, char *filename);
+
+/**
+ * @brief saves the avatar image for the given local user
+ * @param account Account structure
+ * @param username username on the local server
+ * @param avatar_filename File to save
+ * @returns zero on success
+ */
+int get_user_avatar(struct gss_account account, char * username,
+                    char * avatar_filename);
+
+/**
+ * @brief saves the avatar image for a user being followed
+ * @param account Account structure
+ * @param username username being followed
+ * @param avatar_filename File to save
+ * @returns zero on success
+ */
+int get_follow_avatar(struct gss_account account, char * username,
+                      char * avatar_filename);
 
 #endif
