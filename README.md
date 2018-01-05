@@ -1,4 +1,4 @@
-This library can be used to integrate GNU Social with other applications. It is based upon the functions from [GnuSocialShell](https://github.com/dalmemail/GnuSocialShell) by Dan Rulos.
+This library can be used to integrate GNU Social with other applications. It is based upon the functions from [GnuSocialShell](https://github.com/dalmemail/GnuSocialShell) by Daniel Martin.
 
 # Installation
 
