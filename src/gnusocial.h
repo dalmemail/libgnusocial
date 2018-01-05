@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -234,13 +234,6 @@ void print_users_array_info(struct gnusocial_gss_account account, char *source, 
 struct gnusocial_status makeStatusFromRawSource(char *raw_data, int data_size);
 
 /**
- * @brief Prints an status
- * @param status_ The status to print
- */
-
-void print_status(struct gnusocial_status status_);
-
-/**
  * @brief Find a tag into a xml raw file and copy content
  * @param xml_data The raw xml file content
  * @param xml_data_size The xml_data size or size to search in
@@ -291,6 +284,7 @@ void init_account(struct gnusocial_gss_account * acc, char * protocol,
                   char * user, char * server, char * password);
 
 /**
+<<<<<<< HEAD
  * @brief Print account information to the console
  * @param info Account information
  */
@@ -309,6 +303,8 @@ void print_group_info(struct gnusocial_group_info group);
 void print_little_group_info(struct gnusocial_little_group_info group);
 
 /**
+=======
+>>>>>>> 04639bdf1e4bc036dd3a0cc50e14613ab67e813f
  * @brief Export followed users to a text file
  * @param account Account structure
  * @param filename File to be created

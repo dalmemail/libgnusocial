@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,16 +67,6 @@ struct gnusocial_status makeStatusFromRawSource(char *raw_data, int data_size)
     return out_status;
 }
 
-void print_status(struct gnusocial_status status_)
-{
-    printf("\033[36m@%s (ID %d)", status_.author_screen_name, status_.id);
-    if (status_.in_reply_to_user[0] != '\0') {
-        printf(" → @%s (ID %d)", status_.in_reply_to_user, status_.in_reply_to_id);
-    }
-    printf("\033[32m\n%s\n", status_.text);
-    printf("\033[33m%s\n\033[m", status_.date);
-}
-
 int FindXmlError(char *xml_data, int xml_data_size)
 {
     int ret = 0;
@@ -112,6 +102,7 @@ void init_account(struct gnusocial_gss_account * acc, char * protocol,
     sprintf(acc->server, "%s", server);
     sprintf(acc->password, "%s", password);
 }
+<<<<<<< HEAD
 
 void print_user_info(struct gnusocial_account_info info)
 {
@@ -207,3 +198,5 @@ void help_command(char *args)
         printf("No such help for '%s'\n", args);
     }
 }
+=======
+>>>>>>> 04639bdf1e4bc036dd3a0cc50e14613ab67e813f
