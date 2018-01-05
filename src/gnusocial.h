@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -234,13 +234,6 @@ void print_users_array_info(struct gss_account account, char *source, int n_user
 struct status makeStatusFromRawSource(char *raw_data, int data_size);
 
 /**
- * @brief Prints an status
- * @param status_ The status to print
- */
-
-void print_status(struct status status_);
-
-/**
  * @brief Find a tag into a xml raw file and copy content
  * @param xml_data The raw xml file content
  * @param xml_data_size The xml_data size or size to search in
@@ -289,24 +282,6 @@ int get_number_of_groups(struct gss_account account);
  */
 void init_account(struct gss_account * acc, char * protocol,
                   char * user, char * server, char * password);
-
-/**
- * @brief Print account information to the console
- * @param info Account information
- */
-void print_user_info(struct account_info info);
-
-/**
- * @brief Print group information to the console
- * @param group group information
- */
-void print_group_info(struct group_info group);
-
-/**
- * @brief Print little group information to the console
- * @param group little group information
- */
-void print_little_group_info(struct little_group_info group);
 
 /**
  * @brief Export followed users to a text file
