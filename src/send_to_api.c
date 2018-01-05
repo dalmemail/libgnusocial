@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ static size_t cb_writeXmlChunk(void *contents, size_t size, size_t nmemb, void *
   return realsize;
 }
 
-char *send_to_api(struct gnusocial_gss_account account, char *send, char *xml_doc)
+char *send_to_api(gnusocial_account_t account, char *send, char *xml_doc)
 {
         CURLcode err;
     char url[MAX_URL];

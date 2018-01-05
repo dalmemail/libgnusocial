@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Bob Mottram.
+ * Copyright (C) 2017, 2018 Bob Mottram.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void import_users(struct gnusocial_gss_account account, char *filename)
+void import_users(gnusocial_account_t account, char *filename)
 {
     FILE * fp;
     char send[256], line[256];

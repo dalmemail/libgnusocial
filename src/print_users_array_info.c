@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void print_users_array_info(struct gnusocial_gss_account account, char *source, int n_users)
+void print_users_array_info(gnusocial_account_t account, char *source, int n_users)
 {
     char count[32];
     snprintf(count, 32, "count=%d", n_users);

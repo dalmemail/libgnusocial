@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void favorite(struct gnusocial_gss_account account, int id)
+void favorite(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
@@ -28,7 +28,7 @@ void favorite(struct gnusocial_gss_account account, int id)
     free(xml_data);
 }
 
-void unfavorite(struct gnusocial_gss_account account, int id)
+void unfavorite(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);

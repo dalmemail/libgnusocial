@@ -24,7 +24,7 @@
 
 extern int loglevel;
 
-void answer_status_by_id(struct gnusocial_gss_account account, int id, char *msg)
+void answer_status_by_id(gnusocial_account_t account, int id, char *msg)
 {
         /* cURL functionality used just to URIencode the msg */
         CURL *curl = curl_easy_init();

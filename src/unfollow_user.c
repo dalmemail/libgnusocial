@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void unfollow_user(struct gnusocial_gss_account account, char *screen_name)
+void unfollow_user(gnusocial_account_t account, char *screen_name)
 {
     char send[256];
     snprintf(send, 256, "screen_name=%s", screen_name);

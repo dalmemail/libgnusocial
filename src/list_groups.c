@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,15 +25,15 @@
 
 char timelines[2][64] = {"statusnet/groups/list.xml", "statusnet/groups/list_all.xml"};
 
-struct gnusocial_little_group_info *list_groups(struct gnusocial_gss_account account, int n_groups, int group_timeline)
+gnusocial_little_group_info_t *list_groups(gnusocial_account_t account, int n_groups, int group_timeline)
 {
     char count[32];
     snprintf(count, 32, "count=%d", n_groups);
     char *xml_data = send_to_api(account,count,timelines[group_timeline]);
     char error[512];
     int xml_data_size = strlen(xml_data);
-    struct gnusocial_little_group_info *groups =
-        (struct gnusocial_little_group_info*)malloc(n_groups * sizeof(struct gnusocial_group_info));
+    gnusocial_little_group_info_t *groups =
+        (gnusocial_little_group_info_t*)malloc(n_groups * sizeof(gnusocial_group_info_t));
     int i;
     for (i = 0; i < n_groups; i++) {
         groups[i].id = 0;

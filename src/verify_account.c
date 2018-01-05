@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 
 extern int loglevel;
 
-int verify_account(struct gnusocial_gss_account account)
+int verify_account(gnusocial_account_t account)
 {
     int ret = 0;
     char *xml_data = send_to_api(account, NULL, "account/verify_credentials.xml");

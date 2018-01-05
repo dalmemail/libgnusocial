@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct gnusocial_status search_by_id(struct gnusocial_gss_account account, int id, int *result)
+gnusocial_status_t search_by_id(gnusocial_account_t account, int id, int *result)
 {
     char xml_doc[32];
     snprintf(xml_doc, 32, "statuses/show.xml&id=%d", id);
     char *xml_data = send_to_api(account,NULL,xml_doc);
     int xml_data_size = strlen(xml_data);
-    struct gnusocial_status status_by_id;
+    gnusocial_status_t status_by_id;
     if (FindXmlError(xml_data, xml_data_size) < 0 && parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
         status_by_id = makeStatusFromRawSource(xml_data, xml_data_size);
         *result = 0;

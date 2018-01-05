@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct gnusocial_status *read_timeline(struct gnusocial_gss_account account, char *timeline, int n_status)
+gnusocial_status_t *read_timeline(gnusocial_account_t account, char *timeline, int n_status)
 {
-    struct gnusocial_status *status_list = (struct gnusocial_status*)malloc(n_status * sizeof(struct gnusocial_status));
+    gnusocial_status_t *status_list = (gnusocial_status_t*)malloc(n_status * sizeof(gnusocial_status_t));
     char count[32];
     snprintf(count, 32, "count=%d", n_status);
     char *xml_data = send_to_api(account,count,timeline);

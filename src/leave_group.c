@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void leave_group(struct gnusocial_gss_account account, int id)
+void leave_group(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Bob Mottram
+ * Copyright (C) 2017, 2018 Bob Mottram
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ static int download_image_from_url(char * image_url, char * image_filename)
     return 0;
 }
 
-int get_user_avatar(struct gnusocial_gss_account account, char * username,
+int get_user_avatar(gnusocial_account_t account, char * username,
                     char * avatar_filename)
 {
     char source[512];
@@ -85,7 +85,7 @@ int get_user_avatar(struct gnusocial_gss_account account, char * username,
     char error[512];
     char output[512];
     int xml_data_size = strlen(xml_data);
-    struct gnusocial_account_info info;
+    gnusocial_account_info_t info;
     if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
         info.screen_name[0] = '\0';
@@ -103,7 +103,7 @@ int get_user_avatar(struct gnusocial_gss_account account, char * username,
     return 2;
 }
 
-int get_follow_avatar(struct gnusocial_gss_account account, char * username,
+int get_follow_avatar(gnusocial_account_t account, char * username,
                       char * avatar_filename)
 {
     FILE * fp;

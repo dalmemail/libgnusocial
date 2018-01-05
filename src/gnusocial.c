@@ -52,9 +52,9 @@ int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, c
     return ret;
 }
 
-struct gnusocial_status makeStatusFromRawSource(char *raw_data, int data_size)
+gnusocial_status_t makeStatusFromRawSource(char *raw_data, int data_size)
 {
-    struct gnusocial_status out_status;
+    gnusocial_status_t out_status;
     char buffer[16];
     parseXml(raw_data, data_size, "<text>", 6, out_status.text, 1024);
     parseXml(raw_data, data_size, "<id>", 4, buffer, 16);
@@ -77,7 +77,7 @@ int FindXmlError(char *xml_data, int xml_data_size)
     return ret;
 }
 
-int get_number_of_groups(struct gnusocial_gss_account account)
+int get_number_of_groups(gnusocial_account_t account)
 {
     char source[128];
     snprintf(source, 128, "&screen_name=%s", account.user);
@@ -94,7 +94,7 @@ int get_number_of_groups(struct gnusocial_gss_account account)
     return atoi(n_groups);
 }
 
-void init_account(struct gnusocial_gss_account * acc, char * protocol,
+void init_account(gnusocial_account_t * acc, char * protocol,
                   char * user, char * server, char * password)
 {
     sprintf(acc->protocol, "%s", protocol);

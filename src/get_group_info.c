@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct gnusocial_group_info get_group_info(struct gnusocial_gss_account account, int id)
+gnusocial_group_info_t get_group_info(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
@@ -28,7 +28,7 @@ struct gnusocial_group_info get_group_info(struct gnusocial_gss_account account,
     char error[512];
     char output[512];
     int xml_data_size = strlen(xml_data);
-    struct gnusocial_group_info group;
+    gnusocial_group_info_t group;
     if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
         group.id = -1;

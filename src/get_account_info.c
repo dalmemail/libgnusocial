@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct gnusocial_account_info datatoaccount(char *xml_data, int xml_data_size)
+gnusocial_account_info_t datatoaccount(char *xml_data, int xml_data_size)
 {
-    struct gnusocial_account_info info;
+    gnusocial_account_info_t info;
     char output[512];
 
     if (parseXml(xml_data, xml_data_size, "<name>", 6, output, 512) > 0) {
@@ -94,13 +94,13 @@ struct gnusocial_account_info datatoaccount(char *xml_data, int xml_data_size)
     return info;
 }
 
-struct gnusocial_account_info get_my_account_info(struct gnusocial_gss_account account, int *result)
+gnusocial_account_info_t get_my_account_info(gnusocial_account_t account, int *result)
 {
     char send[79];
     snprintf(send, 79, "screen_name=%s", account.user);
     char *xml_data = send_to_api(account, send, "users/show.xml");
     int xml_data_size = strlen(xml_data);
-    struct gnusocial_account_info info;
+    gnusocial_account_info_t info;
     if (FindXmlError(xml_data, xml_data_size) < 0) {
         printf("%s\n", xml_data);
         info = datatoaccount(xml_data, xml_data_size);
