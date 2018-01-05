@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016, 2017 Daniel Martín
+ * Copyright (C) 2016, 2017, 2018 Daniel Martín
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,9 +42,9 @@ void answer_status_by_id(struct gss_account account, int id, char *msg)
             char *xml_data = send_to_api(account, send, "statuses/update.xml");
             int xml_data_size = strlen(xml_data);
             if (FindXmlError(xml_data, strlen(xml_data)) < 0 && parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
-                struct status posted_status;
+                /*struct status posted_status;
                 posted_status = makeStatusFromRawSource(xml_data, xml_data_size);
-                print_status(posted_status);
+                print_status(posted_status);*/
             }
             free(xml_data);
             free(send);
