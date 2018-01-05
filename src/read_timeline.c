@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2016 Dan Rulos.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -21,34 +21,35 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct status *read_timeline(struct gss_account account, char *timeline, int n_status)
+struct gnusocial_status *read_timeline(struct gnusocial_gss_account account, char *timeline, int n_status)
 {
-	struct status *status_list = (struct status*)malloc(n_status * sizeof(struct status));
-	char count[32];
-	snprintf(count, 32, "count=%d", n_status);
-	char *xml_data = send_to_api(account,count,timeline);
-	int xml_data_size = strlen(xml_data);
-	char error[512];
-	int i;
-	for (i = 0; i < n_status; i++) {
-		status_list[i].id = 0;
-	}
-	if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
-		printf("Error: %s\n", error);
-	}
-	else {
-		int i;
-		int start_status_point = 0;
-		int real_status_point = 0;
-		char *status_data;
-		status_data = &xml_data[0];
-		for (i = 0; i < n_status && (real_status_point+13) < xml_data_size; i++) {
-			status_list[i] = makeStatusFromRawSource(status_data, strlen(status_data));
-			start_status_point = parseXml(status_data, (xml_data_size-real_status_point), "</status>", 9, "", 0);
-			real_status_point += start_status_point;
-			status_data = &xml_data[real_status_point];
-		}
-	}
-	free(xml_data);
-	return status_list;
+    struct gnusocial_status *status_list = (struct gnusocial_status*)malloc(n_status * sizeof(struct gnusocial_status));
+    char count[32];
+    snprintf(count, 32, "count=%d", n_status);
+    char *xml_data = send_to_api(account,count,timeline);
+    int xml_data_size = strlen(xml_data);
+    char error[512];
+    int i;
+
+    for (i = 0; i < n_status; i++) {
+        status_list[i].id = 0;
+    }
+    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+        printf("Error: %s\n", error);
+    }
+    else {
+        int i;
+        int start_status_point = 0;
+        int real_status_point = 0;
+        char *status_data;
+        status_data = &xml_data[0];
+        for (i = 0; i < n_status && (real_status_point+13) < xml_data_size; i++) {
+            status_list[i] = makeStatusFromRawSource(status_data, strlen(status_data));
+            start_status_point = parseXml(status_data, (xml_data_size-real_status_point), "</status>", 9, "", 0);
+            real_status_point += start_status_point;
+            status_data = &xml_data[real_status_point];
+        }
+    }
+    free(xml_data);
+    return status_list;
 }

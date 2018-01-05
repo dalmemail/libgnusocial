@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2016 Dan Rulos.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,11 +20,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-void delete_status_by_id(struct gss_account account, int id)
+void delete_status_by_id(struct gnusocial_gss_account account, int id)
 {
-	char send[16];
-	snprintf(send, 16, "id=%d", id);
-	char *xml_data = send_to_api(account, send, "statuses/destroy.xml");
-	FindXmlError(xml_data, strlen(xml_data));
-	free(xml_data);
+    char send[16];
+    snprintf(send, 16, "id=%d", id);
+    char *xml_data = send_to_api(account, send, "statuses/destroy.xml");
+    FindXmlError(xml_data, strlen(xml_data));
+    free(xml_data);
 }

@@ -26,7 +26,7 @@
 
 extern int loglevel;
 
-int verify_account(struct gss_account account)
+int verify_account(struct gnusocial_gss_account account)
 {
     int ret = 0;
     char *xml_data = send_to_api(account, NULL, "account/verify_credentials.xml");

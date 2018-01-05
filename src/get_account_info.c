@@ -21,9 +21,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct account_info datatoaccount(char *xml_data, int xml_data_size)
+struct gnusocial_account_info datatoaccount(char *xml_data, int xml_data_size)
 {
-    struct account_info info;
+    struct gnusocial_account_info info;
     char output[512];
 
     if (parseXml(xml_data, xml_data_size, "<name>", 6, output, 512) > 0) {
@@ -94,14 +94,15 @@ struct account_info datatoaccount(char *xml_data, int xml_data_size)
     return info;
 }
 
-struct account_info get_my_account_info(struct gss_account account, int *result)
+struct gnusocial_account_info get_my_account_info(struct gnusocial_gss_account account, int *result)
 {
     char send[79];
     snprintf(send, 79, "screen_name=%s", account.user);
     char *xml_data = send_to_api(account, send, "users/show.xml");
     int xml_data_size = strlen(xml_data);
-    struct account_info info;
+    struct gnusocial_account_info info;
     if (FindXmlError(xml_data, xml_data_size) < 0) {
+        printf("%s\n", xml_data);
         info = datatoaccount(xml_data, xml_data_size);
         *result = 0;
     }

@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void export_users(struct gss_account account, char *filename)
+void export_users(struct gnusocial_gss_account account, char *filename)
 {
     FILE * fp;
     char * source = "statuses/friends.xml";

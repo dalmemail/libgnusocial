@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void print_users_array_info(struct gss_account account, char *source, int n_users)
+void print_users_array_info(struct gnusocial_gss_account account, char *source, int n_users)
 {
     char count[32];
     snprintf(count, 32, "count=%d", n_users);

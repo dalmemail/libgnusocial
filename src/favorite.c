@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2016 Dan Rulos.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -19,20 +19,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void favorite(struct gss_account account, int id)
+void favorite(struct gnusocial_gss_account account, int id)
 {
-	char send[16];
-	snprintf(send, 16, "id=%d", id);
-	char *xml_data = send_to_api(account, send, "favorites/create.xml");
-	FindXmlError(xml_data, strlen(xml_data));
-	free(xml_data);
+    char send[16];
+    snprintf(send, 16, "id=%d", id);
+    char *xml_data = send_to_api(account, send, "favorites/create.xml");
+    FindXmlError(xml_data, strlen(xml_data));
+    free(xml_data);
 }
 
-void unfavorite(struct gss_account account, int id)
+void unfavorite(struct gnusocial_gss_account account, int id)
 {
-	char send[16];
-	snprintf(send, 16, "id=%d", id);
-	char *xml_data = send_to_api(account, send, "favorites/destroy.xml");
-	FindXmlError(xml_data, strlen(xml_data));
-	free(xml_data);
+    char send[16];
+    snprintf(send, 16, "id=%d", id);
+    char *xml_data = send_to_api(account, send, "favorites/destroy.xml");
+    FindXmlError(xml_data, strlen(xml_data));
+    free(xml_data);
 }

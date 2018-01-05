@@ -76,7 +76,7 @@ static int download_image_from_url(char * image_url, char * image_filename)
     return 0;
 }
 
-int get_user_avatar(struct gss_account account, char * username,
+int get_user_avatar(struct gnusocial_gss_account account, char * username,
                     char * avatar_filename)
 {
     char source[512];
@@ -85,7 +85,7 @@ int get_user_avatar(struct gss_account account, char * username,
     char error[512];
     char output[512];
     int xml_data_size = strlen(xml_data);
-    struct account_info info;
+    struct gnusocial_account_info info;
     if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
         info.screen_name[0] = '\0';
@@ -103,7 +103,7 @@ int get_user_avatar(struct gss_account account, char * username,
     return 2;
 }
 
-int get_follow_avatar(struct gss_account account, char * username,
+int get_follow_avatar(struct gnusocial_gss_account account, char * username,
                       char * avatar_filename)
 {
     FILE * fp;

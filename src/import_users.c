@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void import_users(struct gss_account account, char *filename)
+void import_users(struct gnusocial_gss_account account, char *filename)
 {
     FILE * fp;
     char send[256], line[256];

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2016 Dan Rulos.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,11 +20,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void follow_user(struct gss_account account, char *screen_name)
+void follow_user(struct gnusocial_gss_account account, char *screen_name)
 {
-	char send[79];
-	snprintf(send, 79, "screen_name=%s", screen_name);
-	char *xml_data = send_to_api(account, send, "friendships/create.xml");
-	FindXmlError(xml_data, strlen(xml_data));
-	free(xml_data);
+    char send[79];
+    snprintf(send, 79, "screen_name=%s", screen_name);
+    char *xml_data = send_to_api(account, send, "friendships/create.xml");
+    FindXmlError(xml_data, strlen(xml_data));
+    free(xml_data);
 }

@@ -52,9 +52,9 @@ int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, c
     return ret;
 }
 
-struct status makeStatusFromRawSource(char *raw_data, int data_size)
+struct gnusocial_status makeStatusFromRawSource(char *raw_data, int data_size)
 {
-    struct status out_status;
+    struct gnusocial_status out_status;
     char buffer[16];
     parseXml(raw_data, data_size, "<text>", 6, out_status.text, 1024);
     parseXml(raw_data, data_size, "<id>", 4, buffer, 16);
@@ -67,7 +67,7 @@ struct status makeStatusFromRawSource(char *raw_data, int data_size)
     return out_status;
 }
 
-void print_status(struct status status_)
+void print_status(struct gnusocial_status status_)
 {
     printf("\033[36m@%s (ID %d)", status_.author_screen_name, status_.id);
     if (status_.in_reply_to_user[0] != '\0') {
@@ -87,7 +87,7 @@ int FindXmlError(char *xml_data, int xml_data_size)
     return ret;
 }
 
-int get_number_of_groups(struct gss_account account)
+int get_number_of_groups(struct gnusocial_gss_account account)
 {
     char source[128];
     snprintf(source, 128, "&screen_name=%s", account.user);
@@ -104,7 +104,7 @@ int get_number_of_groups(struct gss_account account)
     return atoi(n_groups);
 }
 
-void init_account(struct gss_account * acc, char * protocol,
+void init_account(struct gnusocial_gss_account * acc, char * protocol,
                   char * user, char * server, char * password)
 {
     sprintf(acc->protocol, "%s", protocol);
@@ -113,7 +113,7 @@ void init_account(struct gss_account * acc, char * protocol,
     sprintf(acc->password, "%s", password);
 }
 
-void print_user_info(struct account_info info)
+void print_user_info(struct gnusocial_account_info info)
 {
     printf("\033[31mName: %s\n\033[32mUser: %s\n\033[33mLocation: %s\n\033[34mDescription: %s\n\033[35mUrl: %s\n",
     info.name, info.screen_name, info.location, info.description, info.url);
@@ -137,7 +137,7 @@ void print_user_info(struct account_info info)
     }
 }
 
-void print_group_info(struct group_info group)
+void print_group_info(struct gnusocial_group_info group)
 {
     printf("\033[31mNickname: %s\n\033[32mFullname: %s\n\033[33mDescription: %s\n\033[34mUrl: %s\n", group.nickname,
     group.fullname, group.description, group.url);
@@ -161,7 +161,7 @@ void print_group_info(struct group_info group)
     }
 }
 
-void print_little_group_info(struct little_group_info group)
+void print_little_group_info(struct gnusocial_little_group_info group)
 {
     printf("\033[36m!%s\033[31m (ID %d)\n\033[32m%s\n\033[m", group.nickname, group.id, group.description);
 }

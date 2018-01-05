@@ -24,7 +24,7 @@
 
 extern int loglevel;
 
-void send_status(struct gss_account account, char *msg)
+void send_status(struct gnusocial_gss_account account, char *msg)
 {
         /* cURL functionality used just to URIencode the msg */
         CURL *curl = curl_easy_init();
@@ -40,7 +40,7 @@ void send_status(struct gss_account account, char *msg)
             char *xml_data = send_to_api(account, send, "statuses/update.xml");
             int xml_data_size = strlen(xml_data);
             if (FindXmlError(xml_data, strlen(xml_data)) < 0 && parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
-                struct status posted_status;
+                struct gnusocial_status posted_status;
                 posted_status = makeStatusFromRawSource(xml_data, xml_data_size);
                 print_status(posted_status);
             }
