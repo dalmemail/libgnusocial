@@ -33,8 +33,8 @@ To show your profile information:
 
 int main(int argc, char **argv)
 {
-    struct gnusocial_gss_account acc;
-    struct gnusocial_account_info info;
+    gnusocial_account_t acc;
+    gnusocial_account_info_t info;
     int result = 1;
 
     init_account(&acc, "https", "username", "domain_name", "password");
@@ -60,7 +60,7 @@ To publish a post:
 
 int main(int argc, char **argv)
 {
-    struct gnusocial_gss_account acc;
+    gnusocial_account_t acc;
 
     init_account(&acc, "https", "username", "domain_name", "password");
     if (verify_account(acc) == -1) return 1;
@@ -78,8 +78,8 @@ To read the last few posts in your home timeline. You can also use the constant 
 
 int main(int argc, char **argv)
 {
-    struct gnusocial_gss_account acc;
-    struct gnusocial_status * posts;
+    gnusocial_account_t acc;
+    gnusocial_status_t * posts;
     const int no_of_posts = 5;
     int i;
 
@@ -104,7 +104,7 @@ To list your friend subscriptions:
 
 int main(int argc, char **argv)
 {
-    struct gnusocial_gss_account acc;
+    gnusocial_account_t acc;
 
     if (argc < 2) {
         printf("No username given\n");
