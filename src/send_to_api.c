@@ -64,10 +64,10 @@ char *send_to_api(gnusocial_account_t account, char *send, char *xml_doc)
     CURL *curl = curl_easy_init();
     // libcurl never reads .curlrc:
     curl_easy_setopt(curl, CURLOPT_CAPATH, "/etc/ssl/certs/" );
-        curl_easy_setopt(curl, CURLOPT_URL, url);
-        curl_easy_setopt(curl, CURLOPT_USERPWD, userpwd);
-        curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, cb_writeXmlChunk);
+    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_USERPWD, userpwd);
+    curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, cb_writeXmlChunk);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)&xml);
 
     if (send != NULL) {
