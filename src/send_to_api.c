@@ -53,7 +53,7 @@ static size_t cb_writeXmlChunk(void *contents, size_t size, size_t nmemb, void *
 
 char *send_to_api(gnusocial_account_t account, char *send, char *xml_doc)
 {
-        CURLcode err;
+    CURLcode err;
     char url[MAX_URL];
     char userpwd[129];
     snprintf(userpwd, 129, "%s:%s", account.user, account.password);
