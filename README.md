@@ -123,7 +123,39 @@ int main(int argc, char **argv)
 
     init_account(&acc, "https", argv[1], argv[2], argv[3]);
     if (verify_account(acc) == -1) return 4;
-    print_users_array_info(acc, "statuses/friends.xml", 9999);
+
+    char count[32];
+    int n_users = 9999;
+    snprintf(count, 32, "count=%d", n_users);
+    char *xml_data = send_to_api(acc,count,"statuses/friends.xml");
+    int xml_data_size = strlen(xml_data);
+    char error[512];
+    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+        printf("Error: %s\n", error);
+    }
+    else if (xml_data_size > 0) {
+        char name[64];
+        char screen_name[64];
+        char url[128];
+        int start_status_point = 0;
+        int real_status_point = 0;
+        char *array_data;
+        array_data = &xml_data[0];
+        int i;
+        for (i = 0; i < n_users && (real_status_point+13) < xml_data_size; i++) {
+            parseXml(array_data, (xml_data_size-real_status_point), "<name>", 6, name, 64);
+            parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>", 13, screen_name, 64);
+            parseXml(array_data, (xml_data_size-real_status_point), "<ostatus_uri>", 13, url, 128);
+            start_status_point = parseXml(array_data, (xml_data_size-real_status_point), "</user>", 7, "", 0);
+            printf("%s,%s,%s\n", name, screen_name, url);
+            real_status_point += start_status_point;
+            array_data = &xml_data[real_status_point];
+        }
+    }
+    else {
+        printf("Error: Reading %d users from '%s://%s/api/%s'\n", n_users, acc.protocol, acc.server, source);
+    }
+    free(xml_data);
 
     return 0;
 }
