@@ -27,28 +27,28 @@
 extern int loglevel;
 
 struct Chunk {
-  char *memory;
-  size_t size;
+    char *memory;
+    size_t size;
 };
 
 /* This in-memory cURL callback is from
    https://curl.haxx.se/libcurl/c/getinmemory.html */
 static size_t cb_writeXmlChunk(void *contents, size_t size, size_t nmemb, void *userp) {
-  size_t realsize = size * nmemb;
-  struct Chunk *mem = (struct Chunk *)userp;
+    size_t realsize = size * nmemb;
+    struct Chunk *mem = (struct Chunk *)userp;
 
-  mem->memory = realloc(mem->memory, mem->size + realsize + 1);
-  if(mem->memory == NULL) {
-    /* out of memory! */
-    printf("not enough memory (realloc returned NULL)\n");
-    return 0;
-  }
+    mem->memory = realloc(mem->memory, mem->size + realsize + 1);
+    if(mem->memory == NULL) {
+        /* out of memory! */
+        printf("not enough memory (realloc returned NULL)\n");
+        return 0;
+    }
 
-  memcpy(&(mem->memory[mem->size]), contents, realsize);
-  mem->size += realsize;
-  mem->memory[mem->size] = 0;
+    memcpy(&(mem->memory[mem->size]), contents, realsize);
+    mem->size += realsize;
+    mem->memory[mem->size] = 0;
 
-  return realsize;
+    return realsize;
 }
 
 char *send_to_api(gnusocial_account_t account, char *send, char *xml_doc)
@@ -70,29 +70,34 @@ char *send_to_api(gnusocial_account_t account, char *send, char *xml_doc)
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, cb_writeXmlChunk);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)&xml);
 
+    if (account.socks_proxy[0] != 0) {
+        curl_easy_setopt(curl, CURLOPT_PROXY, &account.socks_proxy[0]);
+        curl_easy_setopt(curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+    }
+
     if (send != NULL) {
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, send);
     }
 
     if (loglevel > LOG_NONE) {
-            char errbuf[CURL_ERROR_SIZE];
+        char errbuf[CURL_ERROR_SIZE];
         err = curl_easy_perform(curl);
         size_t len = strlen(errbuf);
         switch (err) {
         case CURLE_OK:
-                break;
+            break;
         default:
-          fprintf(stderr, "\nlibcurl: error (%d) ", err);
-          if(len)
-            fprintf(stderr, "%s%s", errbuf,
-                ((errbuf[len - 1] != '\n') ? "\n" : ""));
-          else
-            fprintf(stderr, "%s\n", curl_easy_strerror(err));
+            fprintf(stderr, "\nlibcurl: error (%d) ", err);
+            if(len)
+                fprintf(stderr, "%s%s", errbuf,
+                        ((errbuf[len - 1] != '\n') ? "\n" : ""));
+            else
+                fprintf(stderr, "%s\n", curl_easy_strerror(err));
         }
     } else {
-            curl_easy_perform(curl);
+        curl_easy_perform(curl);
     }
 
-        curl_easy_cleanup(curl);
+    curl_easy_cleanup(curl);
     return xml.memory;
 }

@@ -95,10 +95,15 @@ int get_number_of_groups(gnusocial_account_t account)
 }
 
 void init_account(gnusocial_account_t * acc, char * protocol,
-                  char * user, char * server, char * password)
+                  char * user, char * server, char * password,
+                  char * socks_proxy)
 {
     sprintf(acc->protocol, "%s", protocol);
     sprintf(acc->user, "%s", user);
     sprintf(acc->server, "%s", server);
     sprintf(acc->password, "%s", password);
+    if (socks_proxy != NULL)
+        sprintf(acc->socks_proxy, "%s", socks_proxy);
+    else
+        acc->socks_proxy[0] = 0;
 }

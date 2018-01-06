@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     gnusocial_account_info_t info;
     int result = 1;
 
-    init_account(&acc, "https", "username", "domain_name", "password");
+    init_account(&acc, "https", "username", "domain_name", "password", NULL);
     if (verify_account(acc) == -1) return 1;
 
     info = get_my_account_info(acc, &result);
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 {
     gnusocial_account_t acc;
 
-    init_account(&acc, "https", "username", "domain_name", "password");
+    init_account(&acc, "https", "username", "domain_name", "password", NULL);
     if (verify_account(acc) == -1) return 1;
     send_status(acc, "g'day world!");
 
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
     const int no_of_posts = 5;
     int i;
 
-    init_account(&acc, "https", "username", "domain_name", "password");
+    init_account(&acc, "https", "username", "domain_name", "password", NULL);
     if (verify_account(acc) == -1) return 1;
     posts = read_timeline(acc, HOME_TIMELINE, no_of_posts);
     for (i = 0; i < no_of_posts; i++) {
@@ -121,7 +121,7 @@ int main(int argc, char **argv)
         return 3;
     }
 
-    init_account(&acc, "https", argv[1], argv[2], argv[3]);
+    init_account(&acc, "https", argv[1], argv[2], argv[3], NULL);
     if (verify_account(acc) == -1) return 4;
 
     char count[32];

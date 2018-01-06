@@ -43,6 +43,7 @@ struct gnusocial_account {
     char user[64];
     char password[64];
     char server[32];
+    char socks_proxy[64];
 };
 
 typedef struct gnusocial_account gnusocial_account_t;
@@ -289,9 +290,11 @@ int get_number_of_groups(gnusocial_account_t account);
  * @param user Username
  * @param server Domain name of the gnusocial server
  * @param password Login password
+ * @param socks_proxy Optional socks proxy address:port
  */
 void init_account(gnusocial_account_t * acc, char * protocol,
-                  char * user, char * server, char * password);
+                  char * user, char * server, char * password,
+                  char * socks_proxy);
 
 /**
  * @brief Print account information to the console
