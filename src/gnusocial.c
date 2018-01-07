@@ -22,7 +22,7 @@
 
 int loglevel=LOG_NONE;
 
-int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, char *output, int output_size)
+int gs_parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, char *output, int output_size)
 {
     int pos = 0;
     int act_pos = 0;
@@ -52,51 +52,52 @@ int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, c
     return ret;
 }
 
-gnusocial_status_t makeStatusFromRawSource(char *raw_data, int data_size)
+gnusocial_status_t gs_makeStatusFromRawSource(char *raw_data, int data_size)
 {
     gnusocial_status_t out_status;
     char buffer[16];
-    parseXml(raw_data, data_size, "<text>", 6, out_status.text, 1024);
-    parseXml(raw_data, data_size, "<id>", 4, buffer, 16);
+    gs_parseXml(raw_data, data_size, "<text>", 6, out_status.text, 1024);
+    gs_parseXml(raw_data, data_size, "<id>", 4, buffer, 16);
     out_status.id = atoi(buffer);
-    parseXml(raw_data, data_size, "<screen_name>", 13, out_status.author_screen_name, 64);
-    parseXml(raw_data, data_size, "<in_reply_to_status_id>", 23, buffer, 16);
+    gs_parseXml(raw_data, data_size, "<screen_name>", 13, out_status.author_screen_name, 64);
+    gs_parseXml(raw_data, data_size, "<in_reply_to_status_id>", 23, buffer, 16);
     out_status.in_reply_to_id = atoi(buffer);
-    parseXml(raw_data, data_size, "<in_reply_to_screen_name>", 25, out_status.in_reply_to_user, 64);
-    parseXml(raw_data, data_size, "<created_at>", 12, out_status.date, 64);
+    gs_parseXml(raw_data, data_size, "<in_reply_to_screen_name>", 25, out_status.in_reply_to_user, 64);
+    gs_parseXml(raw_data, data_size, "<created_at>", 12, out_status.date, 64);
     return out_status;
 }
 
-int FindXmlError(char *xml_data, int xml_data_size)
+int gs_FindXmlError(char *xml_data, int xml_data_size)
 {
     int ret = 0;
     char error[512];
-    if ((ret = parseXml(xml_data, xml_data_size, "<error>", 7, error, 512)) > 0) {
+    if ((ret = gs_parseXml(xml_data, xml_data_size, "<error>",
+                           7, error, 512)) > 0) {
         printf("Error: %s\n", error);
     }
     return ret;
 }
 
-int get_number_of_groups(gnusocial_account_t account)
+int gs_get_number_of_groups(gnusocial_account_t account)
 {
     char source[128];
     snprintf(source, 128, "&screen_name=%s", account.user);
-    char *xml_data = send_to_api(account, source, "users/show.xml");
+    char *xml_data = gs_send_to_api(account, source, "users/show.xml");
     char error[512];
     char n_groups[32] = "0";
     int xml_data_size = strlen(xml_data);
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     else {
-        parseXml(xml_data, xml_data_size, "<groups_count>", 14, n_groups, 32);
+        gs_parseXml(xml_data, xml_data_size, "<groups_count>", 14, n_groups, 32);
     }
     return atoi(n_groups);
 }
 
-void init_account(gnusocial_account_t * acc, char * protocol,
-                  char * user, char * server, char * password,
-                  char * socks_proxy)
+void gs_init_account(gnusocial_account_t * acc, char * protocol,
+                     char * user, char * server, char * password,
+                     char * socks_proxy)
 {
     sprintf(acc->protocol, "%s", protocol);
     sprintf(acc->user, "%s", user);

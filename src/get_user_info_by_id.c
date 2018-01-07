@@ -20,68 +20,68 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-gnusocial_account_info_t get_user_info(gnusocial_account_t account, char *source)
+gnusocial_account_info_t gs_get_user_info(gnusocial_account_t account, char *source)
 {
-    char *xml_data = send_to_api(account, source, "users/show.xml");
+    char *xml_data = gs_send_to_api(account, source, "users/show.xml");
     char error[512];
     char output[512];
     int xml_data_size = strlen(xml_data);
     gnusocial_account_info_t info;
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
         info.screen_name[0] = '\0';
     }
     else {
         printf("%s\n", xml_data);
 
-        if (parseXml(xml_data, xml_data_size, "<name>", 6, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<name>", 6, output, 512) > 0) {
             strncpy(info.name, output, MAX_ACCOUNT_NAME);
         }
         else {
             info.name[0] = '?';
             info.name[1] = '\0';
         }
-        if (parseXml(xml_data, xml_data_size, "<screen_name>", 13, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<screen_name>", 13, output, 512) > 0) {
             strncpy(info.screen_name, output, MAX_SCREEN_NAME);
         }
         else {
             info.screen_name[0] = '?';
             info.screen_name[1] = '\0';
         }
-        if (parseXml(xml_data, xml_data_size, "<location>", 10, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<location>", 10, output, 512) > 0) {
             strncpy(info.location, output, MAX_LOCATION);
         }
         else {
             info.location[0] = '?';
             info.location[1] = '\0';
         }
-        if (parseXml(xml_data, xml_data_size, "<description>", 13, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<description>", 13, output, 512) > 0) {
             strncpy(info.description, output, MAX_DESCRIPTION);
         }
         else {
             info.description[0] = '?';
             info.description[1] = '\0';
         }
-        if (parseXml(xml_data, xml_data_size, "<url>", 5, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<url>", 5, output, 512) > 0) {
             strncpy(info.url, output, MAX_URL);
         }
         else {
             info.url[0] = '?';
             info.url[1] = '\0';
         }
-        if (parseXml(xml_data, xml_data_size, "<followers_count>", 17, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<followers_count>", 17, output, 512) > 0) {
             info.followers = atoi(output);
         }
         else {
             info.followers = -1;
         }
-        if (parseXml(xml_data, xml_data_size, "<friends_count>", 15, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<friends_count>", 15, output, 512) > 0) {
             info.friends = atoi(output);
         }
         else {
             info.friends = -1;
         }
-        if (parseXml(xml_data, xml_data_size, "<statuses_count>", 16, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<statuses_count>", 16, output, 512) > 0) {
             info.statuses = atoi(output);
         }
         else {

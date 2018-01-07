@@ -20,11 +20,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void follow_user(gnusocial_account_t account, char *screen_name)
+void gs_follow_user(gnusocial_account_t account, char *screen_name)
 {
     char send[79];
     snprintf(send, 79, "screen_name=%s", screen_name);
-    char *xml_data = send_to_api(account, send, "friendships/create.xml");
-    FindXmlError(xml_data, strlen(xml_data));
+    char *xml_data = gs_send_to_api(account, send, "friendships/create.xml");
+    gs_FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }

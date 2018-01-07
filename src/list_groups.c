@@ -25,11 +25,13 @@
 
 char timelines[2][64] = {"statusnet/groups/list.xml", "statusnet/groups/list_all.xml"};
 
-gnusocial_little_group_info_t *list_groups(gnusocial_account_t account, int n_groups, int group_timeline)
+gnusocial_little_group_info_t *gs_list_groups(gnusocial_account_t account,
+                                              int n_groups, int group_timeline)
 {
     char count[32];
     snprintf(count, 32, "count=%d", n_groups);
-    char *xml_data = send_to_api(account,count,timelines[group_timeline]);
+    char *xml_data =
+        gs_send_to_api(account,count,timelines[group_timeline]);
     char error[512];
     int xml_data_size = strlen(xml_data);
     gnusocial_little_group_info_t *groups =
@@ -38,7 +40,7 @@ gnusocial_little_group_info_t *list_groups(gnusocial_account_t account, int n_gr
     for (i = 0; i < n_groups; i++) {
         groups[i].id = 0;
     }
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     else if (xml_data_size > 0) {
@@ -48,11 +50,11 @@ gnusocial_little_group_info_t *list_groups(gnusocial_account_t account, int n_gr
         char id[16];
         array_data = &xml_data[0];
         for (i = 0; i < n_groups && (real_status_point+13) < xml_data_size; i++) {
-            parseXml(array_data, (xml_data_size-real_status_point), "<id>", 4, id, 16);
+            gs_parseXml(array_data, (xml_data_size-real_status_point), "<id>", 4, id, 16);
             groups[i].id = atoi(id);
-            parseXml(array_data, (xml_data_size-real_status_point), "<nickname>", 10, groups[i].nickname, 64);
-            parseXml(array_data, (xml_data_size-real_status_point), "<description>", 13, groups[i].description, 256);
-            start_status_point = parseXml(array_data, (xml_data_size-real_status_point), "</group>", 8, "", 0);
+            gs_parseXml(array_data, (xml_data_size-real_status_point), "<nickname>", 10, groups[i].nickname, 64);
+            gs_parseXml(array_data, (xml_data_size-real_status_point), "<description>", 13, groups[i].description, 256);
+            start_status_point = gs_parseXml(array_data, (xml_data_size-real_status_point), "</group>", 8, "", 0);
             real_status_point += start_status_point;
             array_data = &xml_data[real_status_point];
         }

@@ -20,14 +20,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void leave_group(gnusocial_account_t account, int id)
+void gs_leave_group(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
-    char *xml_data = send_to_api(account, send, "statusnet/groups/leave.xml");
+    char *xml_data = gs_send_to_api(account, send, "statusnet/groups/leave.xml");
     char error[512];
     int xml_data_size = strlen(xml_data);
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     free(xml_data);

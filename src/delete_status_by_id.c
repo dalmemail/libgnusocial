@@ -20,11 +20,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-void delete_status_by_id(gnusocial_account_t account, int id)
+void gs_delete_status_by_id(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
-    char *xml_data = send_to_api(account, send, "statuses/destroy.xml");
-    FindXmlError(xml_data, strlen(xml_data));
+    char *xml_data = gs_send_to_api(account, send, "statuses/destroy.xml");
+    gs_FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }

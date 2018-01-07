@@ -19,20 +19,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void favorite(gnusocial_account_t account, int id)
+void gs_favorite(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
-    char *xml_data = send_to_api(account, send, "favorites/create.xml");
-    FindXmlError(xml_data, strlen(xml_data));
+    char *xml_data = gs_send_to_api(account, send, "favorites/create.xml");
+    gs_FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }
 
-void unfavorite(gnusocial_account_t account, int id)
+void gs_unfavorite(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
-    char *xml_data = send_to_api(account, send, "favorites/destroy.xml");
-    FindXmlError(xml_data, strlen(xml_data));
+    char *xml_data = gs_send_to_api(account, send, "favorites/destroy.xml");
+    gs_FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }

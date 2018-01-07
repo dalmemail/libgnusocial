@@ -20,19 +20,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void retweet(gnusocial_account_t account, int id, int code)
+void gs_retweet(gnusocial_account_t account, int id, int code)
 {
     char url[MAX_URL];
     snprintf(url, MAX_URL, "statuses/retweet/%d.xml", code);
     char id_[32];
     snprintf(id_, 32, "id=%d", id);
-    char *xml_data = send_to_api(account,id_,url);
+    char *xml_data = gs_send_to_api(account,id_,url);
     int xml_data_size = strlen(xml_data);
     char error[512];
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
-    else if (parseXml(xml_data, xml_data_size, "status", 6, "", 0) < 0) {
+    else if (gs_parseXml(xml_data, xml_data_size, "status", 6, "", 0) < 0) {
         printf("Error: Trying to repeat ID '%d'\n", id);
     }
     free(xml_data);

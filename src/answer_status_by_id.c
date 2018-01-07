@@ -24,7 +24,7 @@
 
 extern int loglevel;
 
-void answer_status_by_id(gnusocial_account_t account, int id, char *msg)
+void gs_answer_status_by_id(gnusocial_account_t account, int id, char *msg)
 {
         /* cURL functionality used just to URIencode the msg */
         CURL *curl = curl_easy_init();
@@ -34,14 +34,19 @@ void answer_status_by_id(gnusocial_account_t account, int id, char *msg)
                 /* margin to fit the ID is included */
                         int amount = 68+strlen(encoded_msg);
             char *send = malloc(amount);
-            snprintf(send, amount, "in_reply_to_status_id=%d&source=GnuSocialShell&status=%s", id, encoded_msg);
+            snprintf(send, amount,
+                     "in_reply_to_status_id=%d&source=GnuSocialShell&status=%s",
+                     id, encoded_msg);
             if (loglevel >= LOG_DEBUG) { // OK?
-                    fprintf(stderr, "in_reply_to_status_id=%d&source=GnuSocialShell&status=%s\n", id, encoded_msg);
+                    fprintf(stderr,
+                            "in_reply_to_status_id=%d&source=GnuSocialShell&status=%s\n",
+                            id, encoded_msg);
             }
             // send[sizeof(send)-1] = '\0'; // snprintf does that too
-            char *xml_data = send_to_api(account, send, "statuses/update.xml");
+            char *xml_data = gs_send_to_api(account, send, "statuses/update.xml");
             int xml_data_size = strlen(xml_data);
-            if (FindXmlError(xml_data, strlen(xml_data)) < 0 && parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
+            if (gs_FindXmlError(xml_data, strlen(xml_data)) < 0 &&
+                gs_parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
                 /*struct gnusocial_status posted_status;
                 posted_status = makeStatusFromRawSource(xml_data, xml_data_size);
                 print_status(posted_status);*/

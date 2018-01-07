@@ -24,7 +24,7 @@
 
 extern int loglevel;
 
-void send_status(gnusocial_account_t account, char *msg)
+void gs_send_status(gnusocial_account_t account, char *msg)
 {
         /* cURL functionality used just to URIencode the msg */
         CURL *curl = curl_easy_init();
@@ -37,9 +37,10 @@ void send_status(gnusocial_account_t account, char *msg)
             if (loglevel >= LOG_DEBUG) { // OK?
                     fprintf(stderr, "source=GnuSocialShell&status=%s", encoded_msg);
             }
-            char *xml_data = send_to_api(account, send, "statuses/update.xml");
+            char *xml_data = gs_send_to_api(account, send, "statuses/update.xml");
             int xml_data_size = strlen(xml_data);
-            if (FindXmlError(xml_data, strlen(xml_data)) < 0 && parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
+            if (gs_FindXmlError(xml_data, strlen(xml_data)) < 0 &&
+                gs_parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
                 /*struct gnusocial_status posted_status;
                 posted_status = makeStatusFromRawSource(xml_data, xml_data_size);
                 print_status(posted_status);*/

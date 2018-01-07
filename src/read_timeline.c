@@ -21,12 +21,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-gnusocial_status_t *read_timeline(gnusocial_account_t account, char *timeline, int n_status)
+gnusocial_status_t *gs_read_timeline(gnusocial_account_t account,
+                                     char *timeline, int n_status)
 {
-    gnusocial_status_t *status_list = (gnusocial_status_t*)malloc(n_status * sizeof(gnusocial_status_t));
+    gnusocial_status_t *status_list =
+        (gnusocial_status_t*)malloc(n_status * sizeof(gnusocial_status_t));
     char count[32];
     snprintf(count, 32, "count=%d", n_status);
-    char *xml_data = send_to_api(account,count,timeline);
+    char *xml_data = gs_send_to_api(account,count,timeline);
     int xml_data_size = strlen(xml_data);
     char error[512];
     int i;
@@ -34,7 +36,7 @@ gnusocial_status_t *read_timeline(gnusocial_account_t account, char *timeline, i
     for (i = 0; i < n_status; i++) {
         status_list[i].id = 0;
     }
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     else {
@@ -44,8 +46,8 @@ gnusocial_status_t *read_timeline(gnusocial_account_t account, char *timeline, i
         char *status_data;
         status_data = &xml_data[0];
         for (i = 0; i < n_status && (real_status_point+13) < xml_data_size; i++) {
-            status_list[i] = makeStatusFromRawSource(status_data, strlen(status_data));
-            start_status_point = parseXml(status_data, (xml_data_size-real_status_point), "</status>", 9, "", 0);
+            status_list[i] = gs_makeStatusFromRawSource(status_data, strlen(status_data));
+            start_status_point = gs_parseXml(status_data, (xml_data_size-real_status_point), "</status>", 9, "", 0);
             real_status_point += start_status_point;
             status_data = &xml_data[real_status_point];
         }

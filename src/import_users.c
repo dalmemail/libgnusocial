@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void import_users(gnusocial_account_t account, char *filename)
+void gs_import_users(gnusocial_account_t account, char *filename)
 {
     FILE * fp;
     char send[256], line[256];
@@ -46,8 +46,8 @@ void import_users(gnusocial_account_t account, char *filename)
 
             snprintf(send, 255, "ostatus_uri=%s", (char*)&line[i]);
             printf("%s\n", send);
-            xml_data = send_to_api(account, send, "friendships/create.xml");
-            FindXmlError(xml_data, strlen(xml_data));
+            xml_data = gs_send_to_api(account, send, "friendships/create.xml");
+            gs_FindXmlError(xml_data, strlen(xml_data));
             free(xml_data);
         }
 

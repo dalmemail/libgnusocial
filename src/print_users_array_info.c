@@ -21,14 +21,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-void print_users_array_info(gnusocial_account_t account, char *source, int n_users)
+void gs_print_users_array_info(gnusocial_account_t account, char *source, int n_users)
 {
     char count[32];
     snprintf(count, 32, "count=%d", n_users);
-    char *xml_data = send_to_api(account,count,source);
+    char *xml_data = gs_send_to_api(account,count,source);
     int xml_data_size = strlen(xml_data);
     char error[512];
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     else if (xml_data_size > 0) {
@@ -41,10 +41,10 @@ void print_users_array_info(gnusocial_account_t account, char *source, int n_use
         array_data = &xml_data[0];
         int i;
         for (i = 0; i < n_users && (real_status_point+13) < xml_data_size; i++) {
-            parseXml(array_data, (xml_data_size-real_status_point), "<name>", 6, name, 64);
-            parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>", 13, screen_name, 64);
-            parseXml(array_data, (xml_data_size-real_status_point), "<ostatus_uri>", 13, url, 128);
-            start_status_point = parseXml(array_data, (xml_data_size-real_status_point), "</user>", 7, "", 0);
+            gs_parseXml(array_data, (xml_data_size-real_status_point), "<name>", 6, name, 64);
+            gs_parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>", 13, screen_name, 64);
+            gs_parseXml(array_data, (xml_data_size-real_status_point), "<ostatus_uri>", 13, url, 128);
+            start_status_point = gs_parseXml(array_data, (xml_data_size-real_status_point), "</user>", 7, "", 0);
             printf("%s,%s,%s\n", name, screen_name, url);
             real_status_point += start_status_point;
             array_data = &xml_data[real_status_point];

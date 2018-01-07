@@ -37,10 +37,10 @@ int main(int argc, char **argv)
     gnusocial_account_info_t info;
     int result = 1;
 
-    init_account(&acc, "https", "username", "domain_name", "password", NULL);
+    gs_init_account(&acc, "https", "username", "domain_name", "password", NULL);
     if (verify_account(acc) == -1) return 1;
 
-    info = get_my_account_info(acc, &result);
+    info = gs_get_my_account_info(acc, &result);
     if (!result) {
         printf("Name: %s\nNick: %s\nLocation: %s\nDescription: %s\n" \
                "Web: %s\nFollowers: %d\nFriends: %d\n",
@@ -62,9 +62,9 @@ int main(int argc, char **argv)
 {
     gnusocial_account_t acc;
 
-    init_account(&acc, "https", "username", "domain_name", "password", NULL);
-    if (verify_account(acc) == -1) return 1;
-    send_status(acc, "g'day world!");
+    gs_init_account(&acc, "https", "username", "domain_name", "password", NULL);
+    if (gs_verify_account(acc) == -1) return 1;
+    gs_send_status(acc, "g'day world!");
 
     return 0;
 }
@@ -83,9 +83,9 @@ int main(int argc, char **argv)
     const int no_of_posts = 5;
     int i;
 
-    init_account(&acc, "https", "username", "domain_name", "password", NULL);
-    if (verify_account(acc) == -1) return 1;
-    posts = read_timeline(acc, HOME_TIMELINE, no_of_posts);
+    gs_init_account(&acc, "https", "username", "domain_name", "password", NULL);
+    if (gs_verify_account(acc) == -1) return 1;
+    posts = gs_read_timeline(acc, HOME_TIMELINE, no_of_posts);
     for (i = 0; i < no_of_posts; i++) {
         printf("[ID: %d] [%s] [%s] %s\n",
                posts[i].id, posts[i].date,
@@ -121,16 +121,16 @@ int main(int argc, char **argv)
         return 3;
     }
 
-    init_account(&acc, "https", argv[1], argv[2], argv[3], NULL);
-    if (verify_account(acc) == -1) return 4;
+    gs_init_account(&acc, "https", argv[1], argv[2], argv[3], NULL);
+    if (gs_verify_account(acc) == -1) return 4;
 
     char count[32];
     int n_users = 9999;
     snprintf(count, 32, "count=%d", n_users);
-    char *xml_data = send_to_api(acc,count,"statuses/friends.xml");
+    char *xml_data = gs_send_to_api(acc,count,"statuses/friends.xml");
     int xml_data_size = strlen(xml_data);
     char error[512];
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     else if (xml_data_size > 0) {
@@ -143,10 +143,10 @@ int main(int argc, char **argv)
         array_data = &xml_data[0];
         int i;
         for (i = 0; i < n_users && (real_status_point+13) < xml_data_size; i++) {
-            parseXml(array_data, (xml_data_size-real_status_point), "<name>", 6, name, 64);
-            parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>", 13, screen_name, 64);
-            parseXml(array_data, (xml_data_size-real_status_point), "<ostatus_uri>", 13, url, 128);
-            start_status_point = parseXml(array_data, (xml_data_size-real_status_point), "</user>", 7, "", 0);
+            gs_parseXml(array_data, (xml_data_size-real_status_point), "<name>", 6, name, 64);
+            gs_parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>", 13, screen_name, 64);
+            gs_parseXml(array_data, (xml_data_size-real_status_point), "<ostatus_uri>", 13, url, 128);
+            start_status_point = gs_parseXml(array_data, (xml_data_size-real_status_point), "</user>", 7, "", 0);
             printf("%s,%s,%s\n", name, screen_name, url);
             real_status_point += start_status_point;
             array_data = &xml_data[real_status_point];

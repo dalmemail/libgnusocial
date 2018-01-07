@@ -24,10 +24,10 @@ void unfollow_user(gnusocial_account_t account, char *screen_name)
 {
     char send[256];
     snprintf(send, 256, "screen_name=%s", screen_name);
-    char *xml_data = send_to_api(account,send,"friendships/destroy.xml");
+    char *xml_data = gs_send_to_api(account,send,"friendships/destroy.xml");
     char error[512];
     int xml_data_size = strlen(xml_data);
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     free(xml_data);

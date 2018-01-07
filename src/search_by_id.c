@@ -21,15 +21,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-gnusocial_status_t search_by_id(gnusocial_account_t account, int id, int *result)
+gnusocial_status_t gs_search_by_id(gnusocial_account_t account, int id, int *result)
 {
     char xml_doc[32];
     snprintf(xml_doc, 32, "statuses/show.xml&id=%d", id);
-    char *xml_data = send_to_api(account,NULL,xml_doc);
+    char *xml_data = gs_send_to_api(account,NULL,xml_doc);
     int xml_data_size = strlen(xml_data);
     gnusocial_status_t status_by_id;
-    if (FindXmlError(xml_data, xml_data_size) < 0 && parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
-        status_by_id = makeStatusFromRawSource(xml_data, xml_data_size);
+    if (gs_FindXmlError(xml_data, xml_data_size) < 0 &&
+        gs_parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
+        status_by_id = gs_makeStatusFromRawSource(xml_data, xml_data_size);
         *result = 0;
     }
     free(xml_data);

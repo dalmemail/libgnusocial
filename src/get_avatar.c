@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int download_image_from_url(char * image_url, char * image_filename)
+static int gs_download_image_from_url(char * image_url, char * image_filename)
 {
     CURL *image;
     CURLcode imgresult;
@@ -76,25 +76,26 @@ static int download_image_from_url(char * image_url, char * image_filename)
     return 0;
 }
 
-int get_user_avatar(gnusocial_account_t account, char * username,
-                    char * avatar_filename)
+int gs_get_user_avatar(gnusocial_account_t account, char * username,
+                       char * avatar_filename)
 {
     char source[512];
     sprintf(source, "screen_name=%s", username);
-    char *xml_data = send_to_api(account, source, "users/show.xml");
+    char *xml_data = gs_send_to_api(account, source, "users/show.xml");
     char error[512];
     char output[512];
     int xml_data_size = strlen(xml_data);
     gnusocial_account_info_t info;
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
         info.screen_name[0] = '\0';
         free(xml_data);
         return 1;
     }
     else {
-        if (parseXml(xml_data, xml_data_size, "<profile_image_url_profile_size>", 32, output, 512) > 0) {
-            download_image_from_url(output, avatar_filename);
+        if (gs_parseXml(xml_data, xml_data_size,
+                        "<profile_image_url_profile_size>", 32, output, 512) > 0) {
+            gs_download_image_from_url(output, avatar_filename);
             free(xml_data);
             return 0;
         }
@@ -103,17 +104,17 @@ int get_user_avatar(gnusocial_account_t account, char * username,
     return 2;
 }
 
-int get_follow_avatar(gnusocial_account_t account, char * username,
-                      char * avatar_filename)
+int gs_get_follow_avatar(gnusocial_account_t account, char * username,
+                         char * avatar_filename)
 {
     FILE * fp;
     char count[32];
     snprintf(count, 32, "count=%d", 99999);
-    char *xml_data = send_to_api(account,count,FRIENDS);
+    char *xml_data = gs_send_to_api(account,count,FRIENDS);
     int xml_data_size = strlen(xml_data);
     char error[512];
 
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     else if (xml_data_size > 0) {
@@ -125,20 +126,25 @@ int get_follow_avatar(gnusocial_account_t account, char * username,
         array_data = &xml_data[0];
         int i;
         for (i = 0; i < 99999 && (real_status_point+13) < xml_data_size; i++) {
-            parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>", 13, screen_name, 64);
+            gs_parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>",
+                        13, screen_name, 64);
             if (strcmp(screen_name, username) == 0) {
-                parseXml(array_data, (xml_data_size-real_status_point), "<profile_image_url_profile_size>", 32, avatar_image_url, 512);
-                download_image_from_url(avatar_image_url, avatar_filename);
+                gs_parseXml(array_data, (xml_data_size-real_status_point),
+                            "<profile_image_url_profile_size>", 32, avatar_image_url, 512);
+                gs_download_image_from_url(avatar_image_url, avatar_filename);
                 free(xml_data);
                 return 0;
             }
-            start_status_point = parseXml(array_data, (xml_data_size-real_status_point), "</user>", 7, "", 0);
+            start_status_point =
+                gs_parseXml(array_data,
+                            (xml_data_size-real_status_point), "</user>", 7, "", 0);
             real_status_point += start_status_point;
             array_data = &xml_data[real_status_point];
         }
     }
     else {
-        printf("Error: Reading users from '%s://%s/api/%s'\n", account.protocol, account.server, FRIENDS);
+        printf("Error: Reading users from '%s://%s/api/%s'\n",
+               account.protocol, account.server, FRIENDS);
     }
     free(xml_data);
     return 1;

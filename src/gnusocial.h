@@ -88,7 +88,7 @@ typedef struct gnusocial_little_group_info gnusocial_little_group_info_t;
  * @return The user information as an account_info structure
  */
 
-gnusocial_account_info_t get_my_account_info(gnusocial_account_t account, int *result);
+gnusocial_account_info_t gs_get_my_account_info(gnusocial_account_t account, int *result);
 
 /**
  * @brief Post a new notice as the authenticating user
@@ -96,7 +96,7 @@ gnusocial_account_info_t get_my_account_info(gnusocial_account_t account, int *r
  * @param msg String that contains the notice content to post
  */
 
-void send_status(gnusocial_account_t account, char *msg);
+void gs_send_status(gnusocial_account_t account, char *msg);
 
 /**
  * @brief Favorites the status specified in the ID parameter as the authenticating user
@@ -104,7 +104,7 @@ void send_status(gnusocial_account_t account, char *msg);
  * @param id The notice ID to favorite
  */
 
-void favorite(gnusocial_account_t account, int id);
+void gs_favorite(gnusocial_account_t account, int id);
 
 /**
  * @brief Un-favorites the status specified in the ID parameter as the authenticating user
@@ -112,7 +112,7 @@ void favorite(gnusocial_account_t account, int id);
  * @param id The notice ID to un-favorite
  */
 
-void unfavorite(gnusocial_account_t account, int id);
+void gs_unfavorite(gnusocial_account_t account, int id);
 
 /**
  * @brief Prints a single notice, specified by the id parameter
@@ -122,7 +122,7 @@ void unfavorite(gnusocial_account_t account, int id);
  * @return An status structure with the status information
  */
 
-gnusocial_status_t search_by_id(gnusocial_account_t account, int id, int *result);
+gnusocial_status_t gs_search_by_id(gnusocial_account_t account, int id, int *result);
 
 /**
  * @brief Destroys the notice specified by the required ID parameter
@@ -130,7 +130,7 @@ gnusocial_status_t search_by_id(gnusocial_account_t account, int id, int *result
  * @param id The notice ID to destroy
  */
 
-void delete_status_by_id(gnusocial_account_t account, int id);
+void gs_delete_status_by_id(gnusocial_account_t account, int id);
 
 /**
  * @brief Post a new notice in reply specified by the required ID parameter
@@ -138,7 +138,7 @@ void delete_status_by_id(gnusocial_account_t account, int id);
  * @param id The notice ID to reply
  */
 
-void answer_status_by_id(gnusocial_account_t account, int id, char *msg);
+void gs_answer_status_by_id(gnusocial_account_t account, int id, char *msg);
 
 /**
  * @brief Read a number of status from 'timeline'
@@ -148,7 +148,7 @@ void answer_status_by_id(gnusocial_account_t account, int id, char *msg);
  * @return An array of status
  */
 
-gnusocial_status_t *read_timeline(gnusocial_account_t account, char *timeline, int n_status);
+gnusocial_status_t *gs_read_timeline(gnusocial_account_t account, char *timeline, int n_status);
 
 /**
  * @brief Repeats a notice espeficied by its ID
@@ -157,7 +157,7 @@ gnusocial_status_t *read_timeline(gnusocial_account_t account, char *timeline, i
  * @param code Should be 1 to work correctly
  */
 
-void retweet(gnusocial_account_t account, int id, int code);
+void gs_retweet(gnusocial_account_t account, int id, int code);
 
 /**
  * @brief Gets user information especified by "source"
@@ -167,14 +167,14 @@ void retweet(gnusocial_account_t account, int id, int code);
  * @return A account_info structure with all the info
  */
 
-gnusocial_account_info_t get_user_info(gnusocial_account_t account, char *source);
+gnusocial_account_info_t gs_get_user_info(gnusocial_account_t account, char *source);
 
 /**
  * @brief Checks if user credentials are correct
  * @param A gss_account structure to check
  */
 
-int verify_account(gnusocial_account_t account);
+int gs_verify_account(gnusocial_account_t account);
 
 /**
  * @brief Gets group information espeficied by its ID
@@ -183,7 +183,7 @@ int verify_account(gnusocial_account_t account);
  * @return A group_info structure with all the info
  */
 
-gnusocial_group_info_t get_group_info(gnusocial_account_t account, int id);
+gnusocial_group_info_t gs_get_group_info(gnusocial_account_t account, int id);
 
 /**
  * @brief Join a group espeficied by its ID
@@ -191,7 +191,7 @@ gnusocial_group_info_t get_group_info(gnusocial_account_t account, int id);
  * @param id The group ID to join
  */
 
-void join_group(gnusocial_account_t account, int id);
+void gs_join_group(gnusocial_account_t account, int id);
 
 /**
  * @brief Leave a group especified by its ID
@@ -199,7 +199,7 @@ void join_group(gnusocial_account_t account, int id);
  * @param id The group ID to leave
  */
 
-void leave_group(gnusocial_account_t account, int id);
+void gs_leave_group(gnusocial_account_t account, int id);
 
 /**
  * @brief Gets little information of a number of groups especified by a 'n_groups'
@@ -209,7 +209,8 @@ void leave_group(gnusocial_account_t account, int id);
  * @return An array of little_group_info structures with all the info
  */
 
-gnusocial_little_group_info_t *list_groups(gnusocial_account_t account, int n_groups, int group_timeline);
+gnusocial_little_group_info_t *gs_list_groups(gnusocial_account_t account,
+                                              int n_groups, int group_timeline);
 
 /**
  * @brief Start to follow a user especified by its screen_name
@@ -217,7 +218,7 @@ gnusocial_little_group_info_t *list_groups(gnusocial_account_t account, int n_gr
  * @param screen_name The user screen_name to follow
  */
 
-void follow_user(gnusocial_account_t account, char *screen_name);
+void gs_follow_user(gnusocial_account_t account, char *screen_name);
 
 /**
  * @brief Stop to follow a user espeficied by its screen_name
@@ -225,7 +226,7 @@ void follow_user(gnusocial_account_t account, char *screen_name);
  * @param screen_name The user to unfollow
  */
 
-void unfollow_user(gnusocial_account_t account, char *screen_name);
+void gs_unfollow_user(gnusocial_account_t account, char *screen_name);
 
 /**
  * @brief Prints a list of users from a especified list
@@ -233,7 +234,8 @@ void unfollow_user(gnusocial_account_t account, char *screen_name);
  * @param n_users The number of users to read
  */
 
-void print_users_array_info(gnusocial_account_t account, char *source, int n_users);
+void gs_print_users_array_info(gnusocial_account_t account,
+                               char *source, int n_users);
 
 /**
  * @brief Make a status structure using raw xml data
@@ -242,7 +244,7 @@ void print_users_array_info(gnusocial_account_t account, char *source, int n_use
  * @return A status structure with the status
  */
 
-gnusocial_status_t makeStatusFromRawSource(char *raw_data, int data_size);
+gnusocial_status_t gs_makeStatusFromRawSource(char *raw_data, int data_size);
 
 /**
  * @brief Find a tag into a xml raw file and copy content
@@ -255,7 +257,8 @@ gnusocial_status_t makeStatusFromRawSource(char *raw_data, int data_size);
  * @return -1 if not exits or the position on the file
  */
 
-int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, char *output, int output_size);
+int gs_parseXml(char *xml_data, int xml_data_size, char *tofind,
+                int tofind_size, char *output, int output_size);
 
 /**
  * @brief Sends a formatted content to the server API
@@ -264,7 +267,7 @@ int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, c
  * @param xml_doc Where to send the content using 'account'
  */
 
-char *send_to_api(gnusocial_account_t account, char *send, char *xml_doc);
+char *gs_send_to_api(gnusocial_account_t account, char *send, char *xml_doc);
 
 /**
  * @brief Searchs for error into a especified string using parseXml()
@@ -273,7 +276,7 @@ char *send_to_api(gnusocial_account_t account, char *send, char *xml_doc);
  * @return A positive number if there is an error, -1 if not
  */
 
-int FindXmlError(char *xml_data, int xml_data_size);
+int gs_FindXmlError(char *xml_data, int xml_data_size);
 
 /**
  * @brief Returns the number of groups in which "account" is
@@ -281,7 +284,7 @@ int FindXmlError(char *xml_data, int xml_data_size);
  * @return The number of groups in which "account" is, or ZERO if fail
  */
 
-int get_number_of_groups(gnusocial_account_t account);
+int gs_get_number_of_groups(gnusocial_account_t account);
 
 /**
  * @brief Populates an account structure with login details
@@ -292,41 +295,41 @@ int get_number_of_groups(gnusocial_account_t account);
  * @param password Login password
  * @param socks_proxy Optional socks proxy address:port
  */
-void init_account(gnusocial_account_t * acc, char * protocol,
-                  char * user, char * server, char * password,
-                  char * socks_proxy);
+void gs_init_account(gnusocial_account_t * acc, char * protocol,
+                     char * user, char * server, char * password,
+                     char * socks_proxy);
 
 /**
  * @brief Print account information to the console
  * @param info Account information
  */
-void print_user_info(gnusocial_account_info_t info);
+void gs_print_user_info(gnusocial_account_info_t info);
 
 /**
  * @brief Print group information to the console
  * @param group group information
  */
-void print_group_info(gnusocial_group_info_t group);
+void gs_print_group_info(gnusocial_group_info_t group);
 
 /**
  * @brief Print little group information to the console
  * @param group little group information
  */
-void print_little_group_info(gnusocial_little_group_info_t group);
+void gs_print_little_group_info(gnusocial_little_group_info_t group);
 
 /**
  * @brief Export followed users to a text file
  * @param account Account structure
  * @param filename File to be created
  */
-void export_users(gnusocial_account_t account, char *filename);
+void gs_export_users(gnusocial_account_t account, char *filename);
 
 /**
  * @brief Import users from a text file
  * @param account Account structure
  * @param filename File containing exported user follows
  */
-void import_users(gnusocial_account_t account, char *filename);
+void gs_import_users(gnusocial_account_t account, char *filename);
 
 /**
  * @brief saves the avatar image for the given local user
@@ -335,8 +338,8 @@ void import_users(gnusocial_account_t account, char *filename);
  * @param avatar_filename File to save
  * @returns zero on success
  */
-int get_user_avatar(gnusocial_account_t account, char * username,
-                    char * avatar_filename);
+int gs_get_user_avatar(gnusocial_account_t account, char * username,
+                       char * avatar_filename);
 
 /**
  * @brief saves the avatar image for a user being followed
@@ -345,7 +348,7 @@ int get_user_avatar(gnusocial_account_t account, char * username,
  * @param avatar_filename File to save
  * @returns zero on success
  */
-int get_follow_avatar(gnusocial_account_t account, char * username,
-                      char * avatar_filename);
+int gs_get_follow_avatar(gnusocial_account_t account, char * username,
+                         char * avatar_filename);
 
 #endif

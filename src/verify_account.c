@@ -29,14 +29,15 @@ extern int loglevel;
 int verify_account(gnusocial_account_t account)
 {
     int ret = 0;
-    char *xml_data = send_to_api(account, NULL, "account/verify_credentials.xml");
+    char *xml_data =
+        gs_send_to_api(account, NULL, "account/verify_credentials.xml");
     int xml_data_size = strlen(xml_data);
     char error[512];
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
         ret = -1;
     }
-    else if (parseXml(xml_data, xml_data_size, "<screen_name>", 13, "", 0) < 0) {
+    else if (gs_parseXml(xml_data, xml_data_size, "<screen_name>", 13, "", 0) < 0) {
         printf("Error: Connecting to @%s@%s\n", account.user, account.server);
         if (loglevel>=LOG_DEBUG) {
             int i;

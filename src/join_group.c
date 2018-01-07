@@ -19,11 +19,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void join_group(gnusocial_account_t account, int id)
+void gs_join_group(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
-    char *xml_data = send_to_api(account, send, "statusnet/groups/join.xml");
-    FindXmlError(xml_data, strlen(xml_data));
+    char *xml_data = gs_send_to_api(account, send, "statusnet/groups/join.xml");
+    gs_FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }
