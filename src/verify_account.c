@@ -26,7 +26,7 @@
 
 extern int loglevel;
 
-int verify_account(gnusocial_account_t account)
+int gs_verify_account(gnusocial_account_t account)
 {
     int ret = 0;
     char *xml_data =

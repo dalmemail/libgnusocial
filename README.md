@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     int result = 1;
 
     gs_init_account(&acc, "https", "username", "domain_name", "password", NULL);
-    if (verify_account(acc) == -1) return 1;
+    if (gs_verify_account(acc) == -1) return 1;
 
     info = gs_get_my_account_info(acc, &result);
     if (!result) {
