@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Dan Rulos.
+ * Copyright (C) 2016, 2018 Daniel Martín
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,14 +28,12 @@
 #define LOG_INFO 2
 #define LOG_DEBUG 3 // very detailed debug messages
 
-// Are these numbers from the GNUsocial spec?
 #define MAX_ACCOUNT_NAME 64
-#define MAX_SCREEN_NAME 64
-#define MAX_LOCATION 64
+#define MAX_SCREEN_NAME 192
+#define MAX_LOCATION 192
 #define MAX_DESCRIPTION 256
 
-// just 128?
-#define MAX_URL 128
+#define MAX_URL 256
 
 #define MAX_GROUP_NICKNAME 64
-#define MAX_GROUP_FULLNAME 64
+#define MAX_GROUP_FULLNAME 256
