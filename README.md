@@ -17,7 +17,7 @@ sudo pacman -S curl
 Then clone the repo, build and install it.
 
 ``` bash
-git clone https://github.com/bashrc/libgnusocial
+git clone https://code.freedombone.net/bashrc/libgnusocial
 cd libgnusocial
 make
 sudo make install
