@@ -33,28 +33,28 @@ gnusocial_account_info_t gs_datatoaccount(char *xml_data, int xml_data_size)
         info.name[0] = '?';
         info.name[1] = '\0';
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<screen_name>", 13, output, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<screen_name>", 13, output, MAX_SCREEN_NAME) > 0) {
         strncpy(info.screen_name, output, MAX_SCREEN_NAME);
     }
     else {
         info.name[0] = '?';
         info.name[1] = '\0';
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<location>", 10, output, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<location>", 10, output, MAX_LOCATION) > 0) {
         strncpy(info.location, output, MAX_LOCATION);
     }
     else {
         info.name[0] = '?';
         info.name[1] = '\0';
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<description>", 13, output, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<description>", 13, output, MAX_DESCRIPTION) > 0) {
         strncpy(info.description, output, MAX_DESCRIPTION);
     }
     else {
         info.name[0] = '?';
         info.name[1] = '\0';
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<url>", 5, output, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<url>", 5, output, MAX_URL) > 0) {
         strncpy(info.url, output, MAX_URL);
     }
     else {
@@ -79,13 +79,13 @@ gnusocial_account_info_t gs_datatoaccount(char *xml_data, int xml_data_size)
     else {
         info.statuses = -1;
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<profile_image_url>", 19, output, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<profile_image_url>", 19, output, MAX_URL) > 0) {
         strncpy(info.profile_image_url, output, MAX_URL);
     }
     else {
         info.profile_image_url[0] = 0;
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<profile_image_url_profile_size>", 32, output, 512) > 0) {
+    if (gs_parseXml(xml_data, xml_data_size, "<profile_image_url_profile_size>", 32, output, MAX_URL) > 0) {
         strncpy(info.profile_image_url_profile_size, output, MAX_URL);
     }
     else {

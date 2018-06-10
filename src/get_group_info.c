@@ -35,21 +35,21 @@ gnusocial_group_info_t gs_get_group_info(gnusocial_account_t account, int id)
     }
     else {
         group.id = id;
-        if (gs_parseXml(xml_data, xml_data_size, "<url>", 5, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<url>", 5, output, MAX_URL) > 0) {
             strncpy(group.url, output, MAX_URL);
         }
         else {
             group.url[0] = '?';
             group.url[1] = '\0';
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<nickname>", 10, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<nickname>", 10, output, MAX_GROUP_NICKNAME) > 0) {
             strncpy(group.nickname, output, MAX_GROUP_NICKNAME);
         }
         else {
             group.nickname[0] = '?';
             group.nickname[1] = '\0';
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<fullname>", 10, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<fullname>", 10, output, MAX_GROUP_FULLNAME) > 0) {
             strncpy(group.fullname, output, MAX_GROUP_FULLNAME);
         }
         else {
@@ -79,7 +79,7 @@ gnusocial_group_info_t gs_get_group_info(gnusocial_account_t account, int id)
         else {
             group.members = -1;
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<description>", 13, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<description>", 13, output, MAX_DESCRIPTION) > 0) {
             strncpy(group.description, output, MAX_DESCRIPTION);
         }
         else {
