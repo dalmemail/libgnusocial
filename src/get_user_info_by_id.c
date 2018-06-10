@@ -34,35 +34,35 @@ gnusocial_account_info_t gs_get_user_info(gnusocial_account_t account, char *sou
     else {
         printf("%s\n", xml_data);
 
-        if (gs_parseXml(xml_data, xml_data_size, "<name>", 6, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<name>", 6, output, MAX_ACCOUNT_NAME) > 0) {
             strncpy(info.name, output, MAX_ACCOUNT_NAME);
         }
         else {
             info.name[0] = '?';
             info.name[1] = '\0';
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<screen_name>", 13, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<screen_name>", 13, output, MAX_SCREEN_NAME) > 0) {
             strncpy(info.screen_name, output, MAX_SCREEN_NAME);
         }
         else {
             info.screen_name[0] = '?';
             info.screen_name[1] = '\0';
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<location>", 10, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<location>", 10, output, MAX_LOCATION) > 0) {
             strncpy(info.location, output, MAX_LOCATION);
         }
         else {
             info.location[0] = '?';
             info.location[1] = '\0';
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<description>", 13, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<description>", 13, output, MAX_DESCRIPTION) > 0) {
             strncpy(info.description, output, MAX_DESCRIPTION);
         }
         else {
             info.description[0] = '?';
             info.description[1] = '\0';
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<url>", 5, output, 512) > 0) {
+        if (gs_parseXml(xml_data, xml_data_size, "<url>", 5, output, MAX_URL) > 0) {
             strncpy(info.url, output, MAX_URL);
         }
         else {
