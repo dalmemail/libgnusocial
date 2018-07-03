@@ -22,6 +22,7 @@
 #include <string.h>
 #include <stddef.h>
 
+#include <ctype.h>
 #include "constants.h"
 
 extern int loglevel;
@@ -100,4 +101,38 @@ char *gs_send_to_api(gnusocial_account_t account, char *send, char *xml_doc)
 
     curl_easy_cleanup(curl);
     return xml.memory;
+}
+
+int gs_verify_account(gnusocial_account_t account)
+{
+    int ret = 0;
+    char *xml_data =
+        gs_send_to_api(account, NULL, "account/verify_credentials.xml");
+    int xml_data_size = strlen(xml_data);
+    char error[512];
+    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+        printf("Error: %s\n", error);
+        ret = -1;
+    }
+    else if (gs_parseXml(xml_data, xml_data_size, "<screen_name>", 13, "", 0) < 0) {
+        printf("Error: Connecting to @%s@%s\n", account.user, account.server);
+        if (loglevel>=LOG_DEBUG) {
+            int i;
+            for (i = 0; i < xml_data_size; ++i) {
+              if (xml_data[i] == '\0') break;
+              /* fprintf(stderr, "%02x ", (unsigned char)xml_data[i]); */
+              if (xml_data[i] == '\\') {
+                fprintf(stderr, "\\\\");
+              } else if (isprint(xml_data[i])) {
+                fprintf(stderr, "%c", (unsigned char)xml_data[i]);
+              } else {
+                fprintf(stderr, "\\x%2x", (unsigned char)xml_data[i]);
+              }
+            }
+            fprintf(stderr, "\n");
+        }
+        ret = -1;
+    }
+    free(xml_data);
+    return ret;
 }
