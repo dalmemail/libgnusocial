@@ -22,8 +22,6 @@
 
 #include <curl/curl.h>
 
-extern int loglevel;
-
 void gs_answer_status_by_id(gnusocial_account_t account, int id, char *msg)
 {
         /* cURL functionality used just to URIencode the msg */
@@ -37,11 +35,11 @@ void gs_answer_status_by_id(gnusocial_account_t account, int id, char *msg)
             snprintf(send, amount,
                      "in_reply_to_status_id=%d&source=GnuSocialShell&status=%s",
                      id, encoded_msg);
-            if (loglevel >= LOG_DEBUG) { // OK?
+            /*if (loglevel >= LOG_DEBUG) { // OK?
                     fprintf(stderr,
                             "in_reply_to_status_id=%d&source=GnuSocialShell&status=%s\n",
                             id, encoded_msg);
-            }
+            }*/
             // send[sizeof(send)-1] = '\0'; // snprintf does that too
             char *xml_data = gs_send_to_api(account, send, "statuses/update.xml");
             int xml_data_size = strlen(xml_data);
@@ -129,9 +127,9 @@ void gs_send_status(gnusocial_account_t account, char *msg)
                         int amount = 31+strlen(encoded_msg);
             char *send = malloc(amount);
             snprintf(send, amount, "source=GnuSocialShell&status=%s", encoded_msg);
-            if (loglevel >= LOG_DEBUG) { // OK?
+            /*if (loglevel >= LOG_DEBUG) { // OK?
                     fprintf(stderr, "source=GnuSocialShell&status=%s", encoded_msg);
-            }
+            }*/
             char *xml_data = gs_send_to_api(account, send, "statuses/update.xml");
             int xml_data_size = strlen(xml_data);
             if (gs_FindXmlError(xml_data, strlen(xml_data)) < 0 &&

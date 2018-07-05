@@ -20,8 +20,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-int loglevel=LOG_NONE;
-
 int gs_parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, char *output, int output_size)
 {
     int pos = 0;

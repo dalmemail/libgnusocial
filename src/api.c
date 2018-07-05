@@ -25,8 +25,6 @@
 #include <ctype.h>
 #include "constants.h"
 
-extern int loglevel;
-
 struct Chunk {
     char *memory;
     size_t size;
@@ -80,7 +78,7 @@ char *gs_send_to_api(gnusocial_account_t account, char *send, char *xml_doc)
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, send);
     }
 
-    if (loglevel > LOG_NONE) {
+    /*if (loglevel > LOG_NONE) {
         char errbuf[CURL_ERROR_SIZE];
         err = curl_easy_perform(curl);
         size_t len = strlen(errbuf);
@@ -97,7 +95,8 @@ char *gs_send_to_api(gnusocial_account_t account, char *send, char *xml_doc)
         }
     } else {
         curl_easy_perform(curl);
-    }
+    }*/
+    curl_easy_perform(curl);
 
     curl_easy_cleanup(curl);
     return xml.memory;
@@ -116,11 +115,11 @@ int gs_verify_account(gnusocial_account_t account)
     }
     else if (gs_parseXml(xml_data, xml_data_size, "<screen_name>", 13, "", 0) < 0) {
         printf("Error: Connecting to @%s@%s\n", account.user, account.server);
-        if (loglevel>=LOG_DEBUG) {
+        /*if (loglevel>=LOG_DEBUG) {
             int i;
             for (i = 0; i < xml_data_size; ++i) {
               if (xml_data[i] == '\0') break;
-              /* fprintf(stderr, "%02x ", (unsigned char)xml_data[i]); */
+              // fprintf(stderr, "%02x ", (unsigned char)xml_data[i]);
               if (xml_data[i] == '\\') {
                 fprintf(stderr, "\\\\");
               } else if (isprint(xml_data[i])) {
@@ -130,7 +129,7 @@ int gs_verify_account(gnusocial_account_t account)
               }
             }
             fprintf(stderr, "\n");
-        }
+        }*/
         ret = -1;
     }
     free(xml_data);
