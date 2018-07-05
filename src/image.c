@@ -31,12 +31,12 @@ static int gs_download_image_from_url(char * image_url, char * image_filename)
 
 
     /* get the file extension */
-    sprintf(extension,"%s","jpg");
-    sprintf(save_image_filename,"%s",image_filename);
+    snprintf(extension, sizeof(extension), "%s","jpg");
+    snprintf(save_image_filename, sizeof(save_image_filename), "%s",image_filename);
     for (pos = strlen(image_url)-1; pos > 1; pos--)
         if (image_url[pos] == '.') break;
     if (pos > 1) {
-        sprintf(extension, "%s", &image_url[pos+1]);
+        snprintf(extension, sizeof(extension), "%s", &image_url[pos+1]);
 
         for (pos = strlen(image_filename)-1; pos > 1; pos--)
             if (image_filename[pos] == '.') break;
@@ -80,7 +80,7 @@ int gs_get_user_avatar(gnusocial_account_t account, char * username,
                        char * avatar_filename)
 {
     char source[512];
-    sprintf(source, "screen_name=%s", username);
+    snprintf(source, sizeof(source), "screen_name=%s", username);
     char *xml_data = gs_send_to_api(account, source, "users/show.xml");
     char error[512];
     char output[512];
