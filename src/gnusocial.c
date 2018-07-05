@@ -99,12 +99,12 @@ void gs_init_account(gnusocial_account_t * acc, char * protocol,
                      char * user, char * server, char * password,
                      char * socks_proxy)
 {
-    sprintf(acc->protocol, "%s", protocol);
-    sprintf(acc->user, "%s", user);
-    sprintf(acc->server, "%s", server);
-    sprintf(acc->password, "%s", password);
+    snprintf(acc->protocol, 8, "%s", protocol);
+    snprintf(acc->user, 64, "%s", user);
+    snprintf(acc->server, 32, "%s", server);
+    snprintf(acc->password, 64, "%s", password);
     if (socks_proxy != NULL)
-        sprintf(acc->socks_proxy, "%s", socks_proxy);
+        snprintf(acc->socks_proxy, 64, "%s", socks_proxy);
     else
         acc->socks_proxy[0] = 0;
 }
