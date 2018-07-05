@@ -236,3 +236,92 @@ void unfollow_user(gnusocial_account_t account, char *screen_name)
     }
     free(xml_data);
 }
+
+gnusocial_account_info_t gs_datatoaccount(char *xml_data, int xml_data_size)
+{
+    gnusocial_account_info_t info;
+    char output[512];
+
+    if (gs_parseXml(xml_data, xml_data_size, "<name>", 6, output, 512) > 0) {
+        strncpy(info.name, output, MAX_ACCOUNT_NAME);
+    }
+    else {
+        info.name[0] = '?';
+        info.name[1] = '\0';
+    }
+    if (gs_parseXml(xml_data, xml_data_size, "<screen_name>", 13, output, MAX_SCREEN_NAME) > 0) {
+        strncpy(info.screen_name, output, MAX_SCREEN_NAME);
+    }
+    else {
+        info.name[0] = '?';
+        info.name[1] = '\0';
+    }
+    if (gs_parseXml(xml_data, xml_data_size, "<location>", 10, output, MAX_LOCATION) > 0) {
+        strncpy(info.location, output, MAX_LOCATION);
+    }
+    else {
+        info.name[0] = '?';
+        info.name[1] = '\0';
+    }
+    if (gs_parseXml(xml_data, xml_data_size, "<description>", 13, output, MAX_DESCRIPTION) > 0) {
+        strncpy(info.description, output, MAX_DESCRIPTION);
+    }
+    else {
+        info.name[0] = '?';
+        info.name[1] = '\0';
+    }
+    if (gs_parseXml(xml_data, xml_data_size, "<url>", 5, output, MAX_URL) > 0) {
+        strncpy(info.url, output, MAX_URL);
+    }
+    else {
+        info.name[0] = '?';
+        info.name[1] = '\0';
+    }
+    if (gs_parseXml(xml_data, xml_data_size, "<followers_count>", 17, output, 512) > 0) {
+        info.followers = atoi(output);
+    }
+    else {
+        info.followers = -1;
+    }
+    if (gs_parseXml(xml_data, xml_data_size, "<friends_count>", 15, output, 512) > 0) {
+        info.friends = atoi(output);
+    }
+    else {
+        info.friends = -1;
+    }
+    if (gs_parseXml(xml_data, xml_data_size, "<statuses_count>", 16, output, 512) > 0) {
+        info.statuses = atoi(output);
+    }
+    else {
+        info.statuses = -1;
+    }
+    if (gs_parseXml(xml_data, xml_data_size, "<profile_image_url>", 19, output, MAX_URL) > 0) {
+        strncpy(info.profile_image_url, output, MAX_URL);
+    }
+    else {
+        info.profile_image_url[0] = 0;
+    }
+    if (gs_parseXml(xml_data, xml_data_size, "<profile_image_url_profile_size>", 32, output, MAX_URL) > 0) {
+        strncpy(info.profile_image_url_profile_size, output, MAX_URL);
+    }
+    else {
+        info.profile_image_url_profile_size[0] = 0;
+    }
+    return info;
+}
+
+gnusocial_account_info_t gs_get_my_account_info(gnusocial_account_t account, int *result)
+{
+    char send[79];
+    snprintf(send, 79, "screen_name=%s", account.user);
+    char *xml_data = gs_send_to_api(account, send, "users/show.xml");
+    int xml_data_size = strlen(xml_data);
+    gnusocial_account_info_t info;
+    if (gs_FindXmlError(xml_data, xml_data_size) < 0) {
+        printf("%s\n", xml_data);
+        info = gs_datatoaccount(xml_data, xml_data_size);
+        *result = 0;
+    }
+    free(xml_data);
+    return info;
+}
