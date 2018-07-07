@@ -16,65 +16,9 @@
  */
 
 #include "gnusocial.h"
+#include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-int gs_parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, char *output, int output_size)
-{
-    int pos = 0;
-    int act_pos = 0;
-    int start_pos = 0;
-    int ret = -1;
-    int i;
-    memset(output, '\0', output_size);
-    for (i = pos; act_pos != tofind_size && i < xml_data_size; i++) {
-        if (tofind[act_pos] == xml_data[i]) {
-            act_pos++;
-            if (act_pos == tofind_size) {
-                pos = i;
-                ret = 0;
-            }
-        }
-        else {
-            act_pos = 0;
-        }
-    }
-    start_pos = pos+1;
-    if (ret == 0) {
-        for (i = 0; (xml_data[start_pos+i] != '<' ||xml_data[start_pos+i+1] != '/') && i < output_size; i++) {
-            output[i] = xml_data[start_pos+i];
-        }
-        ret = (start_pos+i);
-    }
-    return ret;
-}
-
-gnusocial_status_t gs_makeStatusFromRawSource(char *raw_data, int data_size)
-{
-    gnusocial_status_t out_status;
-    char buffer[16];
-    gs_parseXml(raw_data, data_size, "<text>", 6, out_status.text, 1024);
-    gs_parseXml(raw_data, data_size, "<id>", 4, buffer, 16);
-    out_status.id = atoi(buffer);
-    gs_parseXml(raw_data, data_size, "<screen_name>", 13, out_status.author_screen_name, 64);
-    gs_parseXml(raw_data, data_size, "<in_reply_to_status_id>", 23, buffer, 16);
-    out_status.in_reply_to_id = atoi(buffer);
-    gs_parseXml(raw_data, data_size, "<in_reply_to_screen_name>", 25, out_status.in_reply_to_user, 64);
-    gs_parseXml(raw_data, data_size, "<created_at>", 12, out_status.date, 64);
-    return out_status;
-}
-
-int gs_FindXmlError(char *xml_data, int xml_data_size)
-{
-    int ret = 0;
-    char error[512];
-    if ((ret = gs_parseXml(xml_data, xml_data_size, "<error>",
-                           7, error, 512)) > 0) {
-        printf("Error: %s\n", error);
-    }
-    return ret;
-}
 
 int gs_get_number_of_groups(gnusocial_account_t account)
 {
@@ -84,11 +28,11 @@ int gs_get_number_of_groups(gnusocial_account_t account)
     char error[512];
     char n_groups[32] = "0";
     int xml_data_size = strlen(xml_data);
-    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     else {
-        gs_parseXml(xml_data, xml_data_size, "<groups_count>", 14, n_groups, 32);
+        parseXml(xml_data, xml_data_size, "<groups_count>", 14, n_groups, 32);
     }
     return atoi(n_groups);
 }

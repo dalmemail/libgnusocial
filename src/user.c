@@ -17,6 +17,7 @@
 
 #include <curl/curl.h>
 #include "gnusocial.h"
+#include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,7 +42,7 @@ void gs_export_users(gnusocial_account_t account, char *filename)
         return;
     }
 
-    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     else if (xml_data_size > 0) {
@@ -53,10 +54,10 @@ void gs_export_users(gnusocial_account_t account, char *filename)
         array_data = &xml_data[0];
         int i;
         for (i = 0; i < 99999 && (real_status_point+13) < xml_data_size; i++) {
-            gs_parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>", 13, screen_name, 64);
-            gs_parseXml(array_data, (xml_data_size-real_status_point), "<ostatus_uri>", 13, url, 128);
+            parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>", 13, screen_name, 64);
+            parseXml(array_data, (xml_data_size-real_status_point), "<ostatus_uri>", 13, url, 128);
             start_status_point =
-                gs_parseXml(array_data, (xml_data_size-real_status_point), "</user>", 7, "", 0);
+                parseXml(array_data, (xml_data_size-real_status_point), "</user>", 7, "", 0);
             fprintf(fp, "%s,%s\n", screen_name, url);
             real_status_point += start_status_point;
             array_data = &xml_data[real_status_point];
@@ -74,7 +75,7 @@ void gs_follow_user(gnusocial_account_t account, char *screen_name)
     char send[79];
     snprintf(send, 79, "screen_name=%s", screen_name);
     char *xml_data = gs_send_to_api(account, send, "friendships/create.xml");
-    gs_FindXmlError(xml_data, strlen(xml_data));
+    FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }
 
@@ -85,61 +86,61 @@ gnusocial_account_info_t gs_get_user_info(gnusocial_account_t account, char *sou
     char output[512];
     int xml_data_size = strlen(xml_data);
     gnusocial_account_info_t info;
-    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
         info.screen_name[0] = '\0';
     }
     else {
         printf("%s\n", xml_data);
 
-        if (gs_parseXml(xml_data, xml_data_size, "<name>", 6, output, MAX_ACCOUNT_NAME) > 0) {
+        if (parseXml(xml_data, xml_data_size, "<name>", 6, output, MAX_ACCOUNT_NAME) > 0) {
             strncpy(info.name, output, MAX_ACCOUNT_NAME);
         }
         else {
             info.name[0] = '?';
             info.name[1] = '\0';
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<screen_name>", 13, output, MAX_SCREEN_NAME) > 0) {
+        if (parseXml(xml_data, xml_data_size, "<screen_name>", 13, output, MAX_SCREEN_NAME) > 0) {
             strncpy(info.screen_name, output, MAX_SCREEN_NAME);
         }
         else {
             info.screen_name[0] = '?';
             info.screen_name[1] = '\0';
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<location>", 10, output, MAX_LOCATION) > 0) {
+        if (parseXml(xml_data, xml_data_size, "<location>", 10, output, MAX_LOCATION) > 0) {
             strncpy(info.location, output, MAX_LOCATION);
         }
         else {
             info.location[0] = '?';
             info.location[1] = '\0';
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<description>", 13, output, MAX_DESCRIPTION) > 0) {
+        if (parseXml(xml_data, xml_data_size, "<description>", 13, output, MAX_DESCRIPTION) > 0) {
             strncpy(info.description, output, MAX_DESCRIPTION);
         }
         else {
             info.description[0] = '?';
             info.description[1] = '\0';
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<url>", 5, output, MAX_URL) > 0) {
+        if (parseXml(xml_data, xml_data_size, "<url>", 5, output, MAX_URL) > 0) {
             strncpy(info.url, output, MAX_URL);
         }
         else {
             info.url[0] = '?';
             info.url[1] = '\0';
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<followers_count>", 17, output, 512) > 0) {
+        if (parseXml(xml_data, xml_data_size, "<followers_count>", 17, output, 512) > 0) {
             info.followers = atoi(output);
         }
         else {
             info.followers = -1;
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<friends_count>", 15, output, 512) > 0) {
+        if (parseXml(xml_data, xml_data_size, "<friends_count>", 15, output, 512) > 0) {
             info.friends = atoi(output);
         }
         else {
             info.friends = -1;
         }
-        if (gs_parseXml(xml_data, xml_data_size, "<statuses_count>", 16, output, 512) > 0) {
+        if (parseXml(xml_data, xml_data_size, "<statuses_count>", 16, output, 512) > 0) {
             info.statuses = atoi(output);
         }
         else {
@@ -181,7 +182,7 @@ void gs_import_users(gnusocial_account_t account, char *filename)
             snprintf(send, 255, "ostatus_uri=%s", (char*)&line[i]);
             printf("%s\n", send);
             xml_data = gs_send_to_api(account, send, "friendships/create.xml");
-            gs_FindXmlError(xml_data, strlen(xml_data));
+            FindXmlError(xml_data, strlen(xml_data));
             free(xml_data);
         }
 
@@ -196,7 +197,7 @@ void gs_print_users_array_info(gnusocial_account_t account, char *source, int n_
     char *xml_data = gs_send_to_api(account,count,source);
     int xml_data_size = strlen(xml_data);
     char error[512];
-    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     else if (xml_data_size > 0) {
@@ -209,10 +210,10 @@ void gs_print_users_array_info(gnusocial_account_t account, char *source, int n_
         array_data = &xml_data[0];
         int i;
         for (i = 0; i < n_users && (real_status_point+13) < xml_data_size; i++) {
-            gs_parseXml(array_data, (xml_data_size-real_status_point), "<name>", 6, name, 64);
-            gs_parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>", 13, screen_name, 64);
-            gs_parseXml(array_data, (xml_data_size-real_status_point), "<ostatus_uri>", 13, url, 128);
-            start_status_point = gs_parseXml(array_data, (xml_data_size-real_status_point), "</user>", 7, "", 0);
+            parseXml(array_data, (xml_data_size-real_status_point), "<name>", 6, name, 64);
+            parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>", 13, screen_name, 64);
+            parseXml(array_data, (xml_data_size-real_status_point), "<ostatus_uri>", 13, url, 128);
+            start_status_point = parseXml(array_data, (xml_data_size-real_status_point), "</user>", 7, "", 0);
             printf("%s,%s,%s\n", name, screen_name, url);
             real_status_point += start_status_point;
             array_data = &xml_data[real_status_point];
@@ -231,7 +232,7 @@ void unfollow_user(gnusocial_account_t account, char *screen_name)
     char *xml_data = gs_send_to_api(account,send,"friendships/destroy.xml");
     char error[512];
     int xml_data_size = strlen(xml_data);
-    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     free(xml_data);
@@ -242,66 +243,66 @@ gnusocial_account_info_t gs_datatoaccount(char *xml_data, int xml_data_size)
     gnusocial_account_info_t info;
     char output[512];
 
-    if (gs_parseXml(xml_data, xml_data_size, "<name>", 6, output, 512) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<name>", 6, output, 512) > 0) {
         strncpy(info.name, output, MAX_ACCOUNT_NAME);
     }
     else {
         info.name[0] = '?';
         info.name[1] = '\0';
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<screen_name>", 13, output, MAX_SCREEN_NAME) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<screen_name>", 13, output, MAX_SCREEN_NAME) > 0) {
         strncpy(info.screen_name, output, MAX_SCREEN_NAME);
     }
     else {
         info.name[0] = '?';
         info.name[1] = '\0';
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<location>", 10, output, MAX_LOCATION) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<location>", 10, output, MAX_LOCATION) > 0) {
         strncpy(info.location, output, MAX_LOCATION);
     }
     else {
         info.name[0] = '?';
         info.name[1] = '\0';
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<description>", 13, output, MAX_DESCRIPTION) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<description>", 13, output, MAX_DESCRIPTION) > 0) {
         strncpy(info.description, output, MAX_DESCRIPTION);
     }
     else {
         info.name[0] = '?';
         info.name[1] = '\0';
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<url>", 5, output, MAX_URL) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<url>", 5, output, MAX_URL) > 0) {
         strncpy(info.url, output, MAX_URL);
     }
     else {
         info.name[0] = '?';
         info.name[1] = '\0';
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<followers_count>", 17, output, 512) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<followers_count>", 17, output, 512) > 0) {
         info.followers = atoi(output);
     }
     else {
         info.followers = -1;
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<friends_count>", 15, output, 512) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<friends_count>", 15, output, 512) > 0) {
         info.friends = atoi(output);
     }
     else {
         info.friends = -1;
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<statuses_count>", 16, output, 512) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<statuses_count>", 16, output, 512) > 0) {
         info.statuses = atoi(output);
     }
     else {
         info.statuses = -1;
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<profile_image_url>", 19, output, MAX_URL) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<profile_image_url>", 19, output, MAX_URL) > 0) {
         strncpy(info.profile_image_url, output, MAX_URL);
     }
     else {
         info.profile_image_url[0] = 0;
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<profile_image_url_profile_size>", 32, output, MAX_URL) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<profile_image_url_profile_size>", 32, output, MAX_URL) > 0) {
         strncpy(info.profile_image_url_profile_size, output, MAX_URL);
     }
     else {
@@ -317,7 +318,7 @@ gnusocial_account_info_t gs_get_my_account_info(gnusocial_account_t account, int
     char *xml_data = gs_send_to_api(account, send, "users/show.xml");
     int xml_data_size = strlen(xml_data);
     gnusocial_account_info_t info;
-    if (gs_FindXmlError(xml_data, xml_data_size) < 0) {
+    if (FindXmlError(xml_data, xml_data_size) < 0) {
         printf("%s\n", xml_data);
         info = gs_datatoaccount(xml_data, xml_data_size);
         *result = 0;

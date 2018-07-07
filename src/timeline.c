@@ -17,6 +17,7 @@
 
 #include <curl/curl.h>
 #include "gnusocial.h"
+#include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,7 +37,7 @@ gnusocial_status_t *gs_read_timeline(gnusocial_account_t account,
     for (i = 0; i < n_status; i++) {
         status_list[i].id = 0;
     }
-    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
     else {
@@ -46,8 +47,8 @@ gnusocial_status_t *gs_read_timeline(gnusocial_account_t account,
         char *status_data;
         status_data = &xml_data[0];
         for (i = 0; i < n_status && (real_status_point+13) < xml_data_size; i++) {
-            status_list[i] = gs_makeStatusFromRawSource(status_data, strlen(status_data));
-            start_status_point = gs_parseXml(status_data, (xml_data_size-real_status_point), "</status>", 9, "", 0);
+            status_list[i] = makeStatusFromRawSource(status_data, strlen(status_data));
+            start_status_point = parseXml(status_data, (xml_data_size-real_status_point), "</status>", 9, "", 0);
             real_status_point += start_status_point;
             status_data = &xml_data[real_status_point];
         }

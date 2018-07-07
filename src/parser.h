@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016, 2018 Daniel Martín
+ * Copyright (C) 2018 Daniel Martin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,20 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define FAVORITES "favorites.xml"
-#define PUBLIC_TIMELINE "statuses/public_timeline.xml"
-#define HOME_TIMELINE "statuses/home_timeline.xml"
-#define MENTIONS "statuses/mentions.xml"
+// #include "gnusocial.h"
+ 
+int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, char *output, int output_size);
 
-#define FOLLOWERS "statuses/followers.xml"
-#define FRIENDS "statuses/friends.xml"
+gnusocial_status_t makeStatusFromRawSource(char *raw_data, int data_size);
 
-#define MAX_ACCOUNT_NAME 64
-#define MAX_SCREEN_NAME 192
-#define MAX_LOCATION 192
-#define MAX_DESCRIPTION 256
-
-#define MAX_URL 256
-
-#define MAX_GROUP_NICKNAME 64
-#define MAX_GROUP_FULLNAME 256
+int FindXmlError(char *xml_data, int xml_data_size);

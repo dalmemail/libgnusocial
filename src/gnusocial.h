@@ -238,29 +238,6 @@ void gs_print_users_array_info(gnusocial_account_t account,
                                char *source, int n_users);
 
 /**
- * @brief Make a status structure using raw xml data
- * @param raw_data The xml file
- * @param data_size The xml file size
- * @return A status structure with the status
- */
-
-gnusocial_status_t gs_makeStatusFromRawSource(char *raw_data, int data_size);
-
-/**
- * @brief Find a tag into a xml raw file and copy content
- * @param xml_data The raw xml file content
- * @param xml_data_size The xml_data size or size to search in
- * @param tofind The tag to find in xml_data
- * @param tofind_size The size of tofind
- * @param output A variable to save the tag content
- * @param output_size The size of output
- * @return -1 if not exits or the position on the file
- */
-
-int gs_parseXml(char *xml_data, int xml_data_size, char *tofind,
-                int tofind_size, char *output, int output_size);
-
-/**
  * @brief Sends a formatted content to the server API
  * @param account A gss_structure to authenticate into the server
  * @param send The content to send to the server
@@ -268,15 +245,6 @@ int gs_parseXml(char *xml_data, int xml_data_size, char *tofind,
  */
 
 char *gs_send_to_api(gnusocial_account_t account, char *send, char *xml_doc);
-
-/**
- * @brief Searchs for error into a especified string using parseXml()
- * @param xml_data The string with the xml file content returned by the server
- * @param xml_data_size The size of the string 'xml_data'
- * @return A positive number if there is an error, -1 if not
- */
-
-int gs_FindXmlError(char *xml_data, int xml_data_size);
 
 /**
  * @brief Returns the number of groups in which "account" is

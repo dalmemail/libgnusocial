@@ -16,6 +16,7 @@
  */
  
 #include "gnusocial.h"
+#include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,8 +44,8 @@ void gs_answer_status_by_id(gnusocial_account_t account, int id, char *msg)
             // send[sizeof(send)-1] = '\0'; // snprintf does that too
             char *xml_data = gs_send_to_api(account, send, "statuses/update.xml");
             int xml_data_size = strlen(xml_data);
-            if (gs_FindXmlError(xml_data, strlen(xml_data)) < 0 &&
-                gs_parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
+            if (FindXmlError(xml_data, strlen(xml_data)) < 0 &&
+                parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
                 /*struct gnusocial_status posted_status;
                 posted_status = makeStatusFromRawSource(xml_data, xml_data_size);
                 print_status(posted_status);*/
@@ -61,7 +62,7 @@ void gs_delete_status_by_id(gnusocial_account_t account, int id)
     char send[16];
     snprintf(send, 16, "id=%d", id);
     char *xml_data = gs_send_to_api(account, send, "statuses/destroy.xml");
-    gs_FindXmlError(xml_data, strlen(xml_data));
+    FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }
 
@@ -70,7 +71,7 @@ void gs_favorite(gnusocial_account_t account, int id)
     char send[16];
     snprintf(send, 16, "id=%d", id);
     char *xml_data = gs_send_to_api(account, send, "favorites/create.xml");
-    gs_FindXmlError(xml_data, strlen(xml_data));
+    FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }
 
@@ -79,7 +80,7 @@ void gs_unfavorite(gnusocial_account_t account, int id)
     char send[16];
     snprintf(send, 16, "id=%d", id);
     char *xml_data = gs_send_to_api(account, send, "favorites/destroy.xml");
-    gs_FindXmlError(xml_data, strlen(xml_data));
+    FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }
 
@@ -92,10 +93,10 @@ void gs_retweet(gnusocial_account_t account, int id, int code)
     char *xml_data = gs_send_to_api(account,id_,url);
     int xml_data_size = strlen(xml_data);
     char error[512];
-    if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
         printf("Error: %s\n", error);
     }
-    else if (gs_parseXml(xml_data, xml_data_size, "status", 6, "", 0) < 0) {
+    else if (parseXml(xml_data, xml_data_size, "status", 6, "", 0) < 0) {
         printf("Error: Trying to repeat ID '%d'\n", id);
     }
     free(xml_data);
@@ -108,9 +109,9 @@ gnusocial_status_t gs_search_by_id(gnusocial_account_t account, int id, int *res
     char *xml_data = gs_send_to_api(account,NULL,xml_doc);
     int xml_data_size = strlen(xml_data);
     gnusocial_status_t status_by_id;
-    if (gs_FindXmlError(xml_data, xml_data_size) < 0 &&
-        gs_parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
-        status_by_id = gs_makeStatusFromRawSource(xml_data, xml_data_size);
+    if (FindXmlError(xml_data, xml_data_size) < 0 &&
+        parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
+        status_by_id = makeStatusFromRawSource(xml_data, xml_data_size);
         *result = 0;
     }
     free(xml_data);
@@ -132,8 +133,8 @@ void gs_send_status(gnusocial_account_t account, char *msg)
             }*/
             char *xml_data = gs_send_to_api(account, send, "statuses/update.xml");
             int xml_data_size = strlen(xml_data);
-            if (gs_FindXmlError(xml_data, strlen(xml_data)) < 0 &&
-                gs_parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
+            if (FindXmlError(xml_data, strlen(xml_data)) < 0 &&
+                parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
                 /*struct gnusocial_status posted_status;
                 posted_status = makeStatusFromRawSource(xml_data, xml_data_size);
                 print_status(posted_status);*/
