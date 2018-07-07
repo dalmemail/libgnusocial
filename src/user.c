@@ -319,7 +319,7 @@ gnusocial_account_info_t gs_get_my_account_info(gnusocial_account_t account, int
     int xml_data_size = strlen(xml_data);
     gnusocial_account_info_t info;
     if (FindXmlError(xml_data, xml_data_size) < 0) {
-        printf("%s\n", xml_data);
+        //printf("%s\n", xml_data);
         info = gs_datatoaccount(xml_data, xml_data_size);
         *result = 0;
     }
