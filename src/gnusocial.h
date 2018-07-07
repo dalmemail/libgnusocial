@@ -268,24 +268,6 @@ void gs_init_account(gnusocial_account_t * acc, char * protocol,
                      char * socks_proxy);
 
 /**
- * @brief Print account information to the console
- * @param info Account information
- */
-void gs_print_user_info(gnusocial_account_info_t info);
-
-/**
- * @brief Print group information to the console
- * @param group group information
- */
-void gs_print_group_info(gnusocial_group_info_t group);
-
-/**
- * @brief Print little group information to the console
- * @param group little group information
- */
-void gs_print_little_group_info(gnusocial_little_group_info_t group);
-
-/**
  * @brief Export followed users to a text file
  * @param account Account structure
  * @param filename File to be created
