@@ -33,7 +33,7 @@ struct Chunk {
 
 /* This in-memory cURL callback is from
    https://curl.haxx.se/libcurl/c/getinmemory.html */
-static size_t gs_cb_writeXmlChunk(void *contents, size_t size, size_t nmemb, void *userp) {
+static size_t cb_writeXmlChunk(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
     struct Chunk *mem = (struct Chunk *)userp;
 
@@ -51,7 +51,7 @@ static size_t gs_cb_writeXmlChunk(void *contents, size_t size, size_t nmemb, voi
     return realsize;
 }
 
-char *gs_send_to_api(gnusocial_account_t account, char *send, char *xml_doc)
+char *gnusocial_api_request(gnusocial_account_t account, char *send, char *xml_doc)
 {
     CURLcode err;
     char url[MAX_URL];
@@ -67,7 +67,7 @@ char *gs_send_to_api(gnusocial_account_t account, char *send, char *xml_doc)
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_USERPWD, userpwd);
     curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, gs_cb_writeXmlChunk);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, cb_writeXmlChunk);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)&xml);
 
     if (account.socks_proxy[0] != 0) {
@@ -103,11 +103,11 @@ char *gs_send_to_api(gnusocial_account_t account, char *send, char *xml_doc)
     return xml.memory;
 }
 
-int gs_verify_account(gnusocial_account_t account)
+int gnusocial_verify_account(gnusocial_account_t account)
 {
     int ret = 0;
     char *xml_data =
-        gs_send_to_api(account, NULL, "account/verify_credentials.xml");
+        gnusocial_api_request(account, NULL, "account/verify_credentials.xml");
     int xml_data_size = strlen(xml_data);
     char error[512];
     if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {

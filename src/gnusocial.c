@@ -24,7 +24,7 @@ int gs_get_number_of_groups(gnusocial_account_t account)
 {
     char source[128];
     snprintf(source, 128, "&screen_name=%s", account.user);
-    char *xml_data = gs_send_to_api(account, source, "users/show.xml");
+    char *xml_data = gnusocial_api_request(account, source, "users/show.xml");
     char error[512];
     char n_groups[32] = "0";
     int xml_data_size = strlen(xml_data);
@@ -37,7 +37,7 @@ int gs_get_number_of_groups(gnusocial_account_t account)
     return atoi(n_groups);
 }
 
-void gs_init_account(gnusocial_account_t * acc, char * protocol,
+void gnusocial_init_account(gnusocial_account_t * acc, char * protocol,
                      char * user, char * server, char * password,
                      char * socks_proxy)
 {

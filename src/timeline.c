@@ -22,14 +22,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-gnusocial_status_t *gs_read_timeline(gnusocial_account_t account,
+gnusocial_status_t *gnusocial_read_timeline(gnusocial_account_t account,
                                      char *timeline, int n_status)
 {
     gnusocial_status_t *status_list =
         (gnusocial_status_t*)malloc(n_status * sizeof(gnusocial_status_t));
     char count[32];
     snprintf(count, 32, "count=%d", n_status);
-    char *xml_data = gs_send_to_api(account,count,timeline);
+    char *xml_data = gnusocial_api_request(account,count,timeline);
     int xml_data_size = strlen(xml_data);
     char error[512];
     int i;

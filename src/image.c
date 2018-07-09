@@ -82,7 +82,7 @@ int gs_get_user_avatar(gnusocial_account_t account, char * username,
 {
     char source[512];
     snprintf(source, sizeof(source), "screen_name=%s", username);
-    char *xml_data = gs_send_to_api(account, source, "users/show.xml");
+    char *xml_data = gnusocial_api_request(account, source, "users/show.xml");
     char error[512];
     char output[512];
     int xml_data_size = strlen(xml_data);
@@ -111,7 +111,7 @@ int gs_get_follow_avatar(gnusocial_account_t account, char * username,
     FILE * fp;
     char count[32];
     snprintf(count, 32, "count=%d", 99999);
-    char *xml_data = gs_send_to_api(account,count,FRIENDS);
+    char *xml_data = gnusocial_api_request(account,count,FRIENDS);
     int xml_data_size = strlen(xml_data);
     char error[512];
 

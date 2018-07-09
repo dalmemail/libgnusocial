@@ -23,7 +23,7 @@
 
 #include <curl/curl.h>
 
-void gs_answer_status_by_id(gnusocial_account_t account, int id, char *msg)
+void gnusocial_reply_status(gnusocial_account_t account, int id, char *msg)
 {
         /* cURL functionality used just to URIencode the msg */
         CURL *curl = curl_easy_init();
@@ -42,7 +42,7 @@ void gs_answer_status_by_id(gnusocial_account_t account, int id, char *msg)
                             id, encoded_msg);
             }*/
             // send[sizeof(send)-1] = '\0'; // snprintf does that too
-            char *xml_data = gs_send_to_api(account, send, "statuses/update.xml");
+            char *xml_data = gnusocial_api_request(account, send, "statuses/update.xml");
             int xml_data_size = strlen(xml_data);
             if (FindXmlError(xml_data, strlen(xml_data)) < 0 &&
                 parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {
@@ -57,40 +57,40 @@ void gs_answer_status_by_id(gnusocial_account_t account, int id, char *msg)
     }
 }
 
-void gs_delete_status_by_id(gnusocial_account_t account, int id)
+void gnusocial_delete_status(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
-    char *xml_data = gs_send_to_api(account, send, "statuses/destroy.xml");
+    char *xml_data = gnusocial_api_request(account, send, "statuses/destroy.xml");
     FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }
 
-void gs_favorite(gnusocial_account_t account, int id)
+void gnusocial_favorite_status(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
-    char *xml_data = gs_send_to_api(account, send, "favorites/create.xml");
+    char *xml_data = gnusocial_api_request(account, send, "favorites/create.xml");
     FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }
 
-void gs_unfavorite(gnusocial_account_t account, int id)
+void gnusocial_unfavorite_status(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
-    char *xml_data = gs_send_to_api(account, send, "favorites/destroy.xml");
+    char *xml_data = gnusocial_api_request(account, send, "favorites/destroy.xml");
     FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }
 
-void gs_retweet(gnusocial_account_t account, int id, int code)
+void gnusocial_repeat_status(gnusocial_account_t account, int id, int code)
 {
     char url[MAX_URL];
     snprintf(url, MAX_URL, "statuses/retweet/%d.xml", code);
     char id_[32];
     snprintf(id_, 32, "id=%d", id);
-    char *xml_data = gs_send_to_api(account,id_,url);
+    char *xml_data = gnusocial_api_request(account,id_,url);
     int xml_data_size = strlen(xml_data);
     char error[512];
     if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
@@ -102,11 +102,11 @@ void gs_retweet(gnusocial_account_t account, int id, int code)
     free(xml_data);
 }
 
-gnusocial_status_t gs_search_by_id(gnusocial_account_t account, int id, int *result)
+gnusocial_status_t gnusocial_search_status(gnusocial_account_t account, int id, int *result)
 {
     char xml_doc[32];
     snprintf(xml_doc, 32, "statuses/show.xml&id=%d", id);
-    char *xml_data = gs_send_to_api(account,NULL,xml_doc);
+    char *xml_data = gnusocial_api_request(account,NULL,xml_doc);
     int xml_data_size = strlen(xml_data);
     gnusocial_status_t status_by_id;
     if (FindXmlError(xml_data, xml_data_size) < 0 &&
@@ -118,7 +118,7 @@ gnusocial_status_t gs_search_by_id(gnusocial_account_t account, int id, int *res
     return status_by_id;
 }
 
-void gs_send_status(gnusocial_account_t account, char *msg)
+void gnusocial_post_status(gnusocial_account_t account, char *msg)
 {
         /* cURL functionality used just to URIencode the msg */
         CURL *curl = curl_easy_init();
@@ -131,7 +131,7 @@ void gs_send_status(gnusocial_account_t account, char *msg)
             /*if (loglevel >= LOG_DEBUG) { // OK?
                     fprintf(stderr, "source=GnuSocialShell&status=%s", encoded_msg);
             }*/
-            char *xml_data = gs_send_to_api(account, send, "statuses/update.xml");
+            char *xml_data = gnusocial_api_request(account, send, "statuses/update.xml");
             int xml_data_size = strlen(xml_data);
             if (FindXmlError(xml_data, strlen(xml_data)) < 0 &&
                 parseXml(xml_data, xml_data_size, "</status>", 9, NULL, 0) > 0) {

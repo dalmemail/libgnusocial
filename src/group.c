@@ -25,20 +25,20 @@
 
 char timelines[2][64] = {"statusnet/groups/list.xml", "statusnet/groups/list_all.xml"};
 
-void gs_join_group(gnusocial_account_t account, int id)
+void gnusocial_join_group(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
-    char *xml_data = gs_send_to_api(account, send, "statusnet/groups/join.xml");
+    char *xml_data = gnusocial_api_request(account, send, "statusnet/groups/join.xml");
     FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }
 
-void gs_leave_group(gnusocial_account_t account, int id)
+void gnusocial_leave_group(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
-    char *xml_data = gs_send_to_api(account, send, "statusnet/groups/leave.xml");
+    char *xml_data = gnusocial_api_request(account, send, "statusnet/groups/leave.xml");
     char error[512];
     int xml_data_size = strlen(xml_data);
     if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
@@ -51,7 +51,7 @@ gnusocial_group_info_t gs_get_group_info(gnusocial_account_t account, int id)
 {
     char send[16];
     snprintf(send, 16, "id=%d", id);
-    char *xml_data = gs_send_to_api(account, send, "statusnet/groups/show.xml");
+    char *xml_data = gnusocial_api_request(account, send, "statusnet/groups/show.xml");
     char error[512];
     char output[512];
     int xml_data_size = strlen(xml_data);
@@ -124,7 +124,7 @@ gnusocial_little_group_info_t *gs_list_groups(gnusocial_account_t account,
     char count[32];
     snprintf(count, 32, "count=%d", n_groups);
     char *xml_data =
-        gs_send_to_api(account,count,timelines[group_timeline]);
+        gnusocial_api_request(account,count,timelines[group_timeline]);
     char error[512];
     int xml_data_size = strlen(xml_data);
     gnusocial_little_group_info_t *groups =

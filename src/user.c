@@ -22,17 +22,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* gs_export_users() is a function by Bob Mottram *
+/* gnusocial_export_users() is a function by Bob Mottram *
  * Copyright (C) 2017, 2018 Bob Mottram. *
  */
 
-void gs_export_users(gnusocial_account_t account, char *filename)
+void gnusocial_export_users(gnusocial_account_t account, char *filename)
 {
     FILE * fp;
     char * source = "statuses/friends.xml";
     char count[32];
     snprintf(count, 32, "count=%d", 99999);
-    char *xml_data = gs_send_to_api(account,count,source);
+    char *xml_data = gnusocial_api_request(account,count,source);
     int xml_data_size = strlen(xml_data);
     char error[512];
 
@@ -70,18 +70,18 @@ void gs_export_users(gnusocial_account_t account, char *filename)
     fclose(fp);
 }
 
-void gs_follow_user(gnusocial_account_t account, char *screen_name)
+void gnusocial_follow_user(gnusocial_account_t account, char *screen_name)
 {
     char send[79];
     snprintf(send, 79, "screen_name=%s", screen_name);
-    char *xml_data = gs_send_to_api(account, send, "friendships/create.xml");
+    char *xml_data = gnusocial_api_request(account, send, "friendships/create.xml");
     FindXmlError(xml_data, strlen(xml_data));
     free(xml_data);
 }
 
 gnusocial_account_info_t gs_get_user_info(gnusocial_account_t account, char *source)
 {
-    char *xml_data = gs_send_to_api(account, source, "users/show.xml");
+    char *xml_data = gnusocial_api_request(account, source, "users/show.xml");
     char error[512];
     char output[512];
     int xml_data_size = strlen(xml_data);
@@ -151,11 +151,11 @@ gnusocial_account_info_t gs_get_user_info(gnusocial_account_t account, char *sou
     return info;
 }
 
-/* gs_export_users() is a function by Bob Mottram *
+/* gnusocial_import_users() is a function by Bob Mottram *
  * Copyright (C) 2017, 2018 Bob Mottram. *
  */
 
-void gs_import_users(gnusocial_account_t account, char *filename)
+void gnusocial_import_users(gnusocial_account_t account, char *filename)
 {
     FILE * fp;
     char send[256], line[256];
@@ -181,7 +181,7 @@ void gs_import_users(gnusocial_account_t account, char *filename)
 
             snprintf(send, 255, "ostatus_uri=%s", (char*)&line[i]);
             printf("%s\n", send);
-            xml_data = gs_send_to_api(account, send, "friendships/create.xml");
+            xml_data = gnusocial_api_request(account, send, "friendships/create.xml");
             FindXmlError(xml_data, strlen(xml_data));
             free(xml_data);
         }
@@ -194,7 +194,7 @@ void gs_print_users_array_info(gnusocial_account_t account, char *source, int n_
 {
     char count[32];
     snprintf(count, 32, "count=%d", n_users);
-    char *xml_data = gs_send_to_api(account,count,source);
+    char *xml_data = gnusocial_api_request(account,count,source);
     int xml_data_size = strlen(xml_data);
     char error[512];
     if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
@@ -225,11 +225,11 @@ void gs_print_users_array_info(gnusocial_account_t account, char *source, int n_
     free(xml_data);
 }
 
-void unfollow_user(gnusocial_account_t account, char *screen_name)
+void gnusocial_unfollow_user(gnusocial_account_t account, char *screen_name)
 {
     char send[256];
     snprintf(send, 256, "screen_name=%s", screen_name);
-    char *xml_data = gs_send_to_api(account,send,"friendships/destroy.xml");
+    char *xml_data = gnusocial_api_request(account,send,"friendships/destroy.xml");
     char error[512];
     int xml_data_size = strlen(xml_data);
     if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
@@ -315,7 +315,7 @@ gnusocial_account_info_t gs_get_my_account_info(gnusocial_account_t account, int
 {
     char send[79];
     snprintf(send, 79, "screen_name=%s", account.user);
-    char *xml_data = gs_send_to_api(account, send, "users/show.xml");
+    char *xml_data = gnusocial_api_request(account, send, "users/show.xml");
     int xml_data_size = strlen(xml_data);
     gnusocial_account_info_t info;
     if (FindXmlError(xml_data, xml_data_size) < 0) {
