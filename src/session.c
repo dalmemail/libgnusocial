@@ -34,5 +34,18 @@ void gnusocial_session_free(gnusocial_session_t *session)
 	if (session->errormsg)
 		free(session->errormsg);
 	
+	if (session->xml)
+		free(session->xml);
+	
 	free(session);
+}
+
+char *gnusocial_session_xml(gnusocial_session_t *session)
+{
+	return session->xml;
+}
+
+char *gnusocial_session_error(gnusocial_session_t *session)
+{
+	return session->errormsg;
 }

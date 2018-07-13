@@ -85,6 +85,7 @@ struct gnusocial_session {
 	gnusocial_status_t *status;
 	unsigned int n_status;
 	char *errormsg;
+	char *xml;
 };
 
 typedef struct gnusocial_session gnusocial_session_t;
