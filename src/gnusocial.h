@@ -81,6 +81,28 @@ struct gnusocial_little_group_info {
 
 typedef struct gnusocial_little_group_info gnusocial_little_group_info_t;
 
+struct gnusocial_session {
+	gnusocial_status_t *status;
+	unsigned int n_status;
+	char *errormsg;
+};
+
+typedef struct gnusocial_session gnusocial_session_t;
+
+/**
+ * @brief Allocates enough space for a gnusocial_session_t
+ * @return A pointer to a gnusocial_session_t if succeed and NULL if failed
+ */
+
+gnusocial_session_t *gnusocial_session_create(void);
+
+/**
+ * @brief Frees a gnusocial_session_t previously created
+ * @param session A gnusocial_session_t to be freed
+ */
+
+void gnusocial_session_free(gnusocial_session_t *session);
+
 /**
  * @brief Downloads the user information from the GnuSocial server
  * @param account A gss_account structure to send the request to the GnuSocial server
