@@ -105,6 +105,22 @@ gnusocial_session_t *gnusocial_session_create(void);
 void gnusocial_session_free(gnusocial_session_t *session);
 
 /**
+ * @brief Returns the full xml file got from the API
+ * @param session gnusocial_session_t of which you want to get the XML file
+ * @return A pointer to the XML file content
+ */
+
+char *gnusocial_session_xml(gnusocial_session_t *session);
+
+/**
+ * @brief Returns a curl or GNUsocial API error message
+ * @param session gnusocial_session_t where the error took place
+ * @return A pointer to the error message (string)
+ */
+
+char *gnusocial_session_error(gnusocial_session_t *session);
+
+/**
  * @brief Downloads the user information from the GnuSocial server
  * @param account A gss_account structure to send the request to the GnuSocial server
  * @param result An intenger to store if there is an error or not. ZERO if not, Non-ZERO if yes
