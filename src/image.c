@@ -111,7 +111,7 @@ int gs_get_follow_avatar(gnusocial_account_t account, char * username,
     FILE * fp;
     char count[32];
     snprintf(count, 32, "count=%d", 99999);
-    char *xml_data = gnusocial_api_request(account,count,FRIENDS);
+    char *xml_data = gnusocial_api_request(account,count,GNUSOCIAL_FRIENDS_LIST);
     int xml_data_size = strlen(xml_data);
     char error[512];
 
@@ -145,7 +145,7 @@ int gs_get_follow_avatar(gnusocial_account_t account, char * username,
     }
     else {
         printf("Error: Reading users from '%s://%s/api/%s'\n",
-               account.protocol, account.server, FRIENDS);
+               account.protocol, account.server, GNUSOCIAL_FRIENDS_LIST);
     }
     free(xml_data);
     return 1;

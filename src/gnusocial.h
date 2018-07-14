@@ -39,11 +39,11 @@ struct gnusocial_account_info {
 typedef struct gnusocial_account_info gnusocial_account_info_t;
 
 struct gnusocial_account {
-    char protocol[8];
-    char user[64];
-    char password[64];
-    char server[32];
-    char socks_proxy[64];
+    char protocol[GNUSOCIAL_ACCOUNT_PROTOCOL_SIZE];
+    char user[GNUSOCIAL_ACCOUNT_USERNAME_SIZE];
+    char password[GNUSOCIAL_ACCOUNT_PASSWORD_SIZE];
+    char server[GNUSOCIAL_ACCOUNT_SERVER_SIZE];
+    char socks_proxy[GNUSOCIAL_ACCOUNT_PROXY_SIZE];
 };
 
 typedef struct gnusocial_account gnusocial_account_t;
@@ -82,6 +82,7 @@ struct gnusocial_little_group_info {
 typedef struct gnusocial_little_group_info gnusocial_little_group_info_t;
 
 struct gnusocial_session {
+	gnusocial_account_t *account;
 	gnusocial_status_t *status;
 	unsigned int n_status;
 	char *errormsg;
@@ -119,6 +120,13 @@ char *gnusocial_session_xml(gnusocial_session_t *session);
  */
 
 char *gnusocial_session_error(gnusocial_session_t *session);
+
+/**
+ * @brief Resets the gnusocial session data from a request, usually to make a new request
+ * @param session gnusocial_session_t of which we want to reset the request data
+ */
+
+void gnusocial_session_reset(gnusocial_session_t *session);
 
 /**
  * @brief Downloads the user information from the GnuSocial server

@@ -51,12 +51,15 @@ static size_t cb_writeXmlChunk(void *contents, size_t size, size_t nmemb, void *
     return realsize;
 }
 
-char *gnusocial_api_request(gnusocial_account_t account, char *send, char *xml_doc)
+int gnusocial_api_request(gnusocial_account_t account, char *send, char *xml_doc)
 {
+    // Just remove the values from the last request
+    gnusocial_session_reset(session);
+
     CURLcode err;
     char url[MAX_URL];
     char userpwd[129];
-    snprintf(userpwd, 129, "%s:%s", account.user, account.password);
+    snprintf(userpwd, sizeof(userpwd), "%s:%s", account.user, account.password);
     snprintf(url, MAX_URL, "%s://%s/api/%s", account.protocol, account.server, xml_doc);
     struct Chunk xml;
     xml.memory = (char *)malloc(1);

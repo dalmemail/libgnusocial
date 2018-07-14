@@ -28,6 +28,9 @@ void gnusocial_session_free(gnusocial_session_t *session)
 	if (!session)
 		return;
 
+	if (session->account)
+		free(session->account);
+
 	if (session->status)
 		free(session->status);
 	
@@ -36,7 +39,7 @@ void gnusocial_session_free(gnusocial_session_t *session)
 	
 	if (session->xml)
 		free(session->xml);
-	
+
 	free(session);
 }
 
@@ -48,4 +51,21 @@ char *gnusocial_session_xml(gnusocial_session_t *session)
 char *gnusocial_session_error(gnusocial_session_t *session)
 {
 	return session->errormsg;
+}
+
+void gnusocial_session_reset(gnusocial_session_t *session)
+{
+	if (!session)
+		return;
+	
+	if (session->status) {
+		free(session->status);
+		session->n_status = 0;
+	}
+	
+	if (session->errormsg)
+		free(session->errormsg);
+	
+	if (session->xml)
+		free(session->xml);
 }

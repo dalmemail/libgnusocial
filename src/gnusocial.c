@@ -19,6 +19,7 @@
 #include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int gs_get_number_of_groups(gnusocial_account_t account)
 {
@@ -37,16 +38,46 @@ int gs_get_number_of_groups(gnusocial_account_t account)
     return atoi(n_groups);
 }
 
-void gnusocial_init_account(gnusocial_account_t * acc, char * protocol,
-                     char * user, char * server, char * password,
-                     char * socks_proxy)
+static int check_account_credentials_length(char *protocol, char *user, char *server,
+			char *password, char *socks_proxy)
 {
-    snprintf(acc->protocol, 8, "%s", protocol);
-    snprintf(acc->user, 64, "%s", user);
-    snprintf(acc->server, 32, "%s", server);
-    snprintf(acc->password, 64, "%s", password);
-    if (socks_proxy != NULL)
-        snprintf(acc->socks_proxy, 64, "%s", socks_proxy);
-    else
-        acc->socks_proxy[0] = 0;
+	if (strlen(protocol) >= GNUSOCIAL_ACCOUNT_PROTOCOL_SIZE)
+		return GNUSOCIAL_ERROR_INVALID_PROTOCOL_SIZE;
+	
+	if (strlen(user) >= GNUSOCIAL_ACCOUNT_USERNAME_SIZE)
+		return GNUSOCIAL_ERROR_INVALID_USERNAME_SIZE;
+	
+	if (strlen(server) >= GNUSOCIAL_ACCOUNT_SERVER_SIZE)
+		return GNUSOCIAL_ERROR_INVALID_SERVER_SIZE;
+	
+	if (strlen(password) >= GNUSOCIAL_ACCOUNT_PASSWORD_SIZE)
+		return GNUSOCIAL_ERROR_INVALID_PASSWORD_SIZE;
+	
+	if (strlen(socks_proxy) >= GNUSOCIAL_ACCOUNT_PROXY_SIZE)
+		return GNUSOCIAL_ERROR_INVALID_PROXY_SIZE;
+	
+	return 0;
+}
+
+int gnusocial_set_account(gnusocial_session_t *session, char *protocol,
+			char *user, char *server, char *password, char *socks_proxy)
+{
+	int rc = check_account_credentials_length(protocol, user, server, password, socks_proxy);
+	if (rc < 0)
+		return rc;
+
+	session->account = calloc(1, sizeof(gnusocial_account_t));
+	if (!session->account)
+		return GNUSOCIAL_ERROR_NULL_MEMORY_ALLOCATED;
+
+	snprintf(session->account->protocol, GNUSOCIAL_ACCOUNT_PROTOCOL_SIZE, "%s", protocol);
+	snprintf(session->account->user, GNUSOCIAL_ACCOUNT_USERNAME_SIZE, "%s", user);
+	snprintf(session->account->server, GNUSOCIAL_ACCOUNT_SERVER_SIZE, "%s", server);
+	snprintf(session->account->password, GNUSOCIAL_ACCOUNT_PASSWORD_SIZE, "%s", password);
+	if (socks_proxy)
+		snprintf(session->account->socks_proxy, GNUSOCIAL_ACCOUNT_PROXY_SIZE, "%s", socks_proxy);
+	else
+		session->account->socks_proxy[0] = 0;
+
+	return 0;
 }
