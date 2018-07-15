@@ -51,16 +51,25 @@ static size_t cb_writeXmlChunk(void *contents, size_t size, size_t nmemb, void *
     return realsize;
 }
 
-int gnusocial_api_request(gnusocial_account_t account, char *send, char *xml_doc)
+int gnusocial_api_request(gnusocial_session_t *session, char *send, char *xml_doc)
 {
+    int result = GNUSOCIAL_REQUEST_SUCCEED;
+
+    if (!session)
+    	    return GNUSOCIAL_ERROR_NULL_SESSION;
+    
+    if (!session->account)
+    	    return GNUSOCIAL_ERROR_NULL_ACCOUNT;
+
+    gnusocial_account_t *account = session->account;
     // Just remove the values from the last request
     gnusocial_session_reset(session);
 
     CURLcode err;
     char url[MAX_URL];
-    char userpwd[129];
-    snprintf(userpwd, sizeof(userpwd), "%s:%s", account.user, account.password);
-    snprintf(url, MAX_URL, "%s://%s/api/%s", account.protocol, account.server, xml_doc);
+    char userpwd[GNUSOCIAL_ACCOUNT_USERNAME_SIZE+GNUSOCIAL_ACCOUNT_PASSWORD_SIZE-1];
+    snprintf(userpwd, sizeof(userpwd), "%s:%s", account->user, account->password);
+    snprintf(url, sizeof(url), "%s://%s/api/%s", account->protocol, account->server, xml_doc);
     struct Chunk xml;
     xml.memory = (char *)malloc(1);
     xml.size = 0;
@@ -73,37 +82,28 @@ int gnusocial_api_request(gnusocial_account_t account, char *send, char *xml_doc
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, cb_writeXmlChunk);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)&xml);
 
-    if (account.socks_proxy[0] != 0) {
-        curl_easy_setopt(curl, CURLOPT_PROXY, &account.socks_proxy[0]);
+    if (account->socks_proxy[0] != 0) {
+        curl_easy_setopt(curl, CURLOPT_PROXY, &account->socks_proxy[0]);
         curl_easy_setopt(curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
     }
 
-    if (send != NULL) {
+    if (send) {
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, send);
     }
 
-    /*if (loglevel > LOG_NONE) {
-        char errbuf[CURL_ERROR_SIZE];
-        err = curl_easy_perform(curl);
-        size_t len = strlen(errbuf);
-        switch (err) {
-        case CURLE_OK:
-            break;
-        default:
-            fprintf(stderr, "\nlibcurl: error (%d) ", err);
-            if(len)
-                fprintf(stderr, "%s%s", errbuf,
-                        ((errbuf[len - 1] != '\n') ? "\n" : ""));
-            else
-                fprintf(stderr, "%s\n", curl_easy_strerror(err));
-        }
-    } else {
-        curl_easy_perform(curl);
-    }*/
-    curl_easy_perform(curl);
+    err = curl_easy_perform(curl);
+    if (err == CURLE_OK)
+        session->xml = xml.memory;
+    else if ((session->errormsg = calloc(1, CURL_ERROR_SIZE))) {
+        snprintf(session->errormsg, CURL_ERROR_SIZE, "%s", curl_easy_strerror(err));
+        result = GNUSOCIAL_CURL_ERROR;
+    }
+    else
+        result = GNUSOCIAL_ERROR_NULL_MEMORY_ALLOCATED;
 
     curl_easy_cleanup(curl);
-    return xml.memory;
+
+    return result;
 }
 
 int gnusocial_verify_account(gnusocial_account_t account)
