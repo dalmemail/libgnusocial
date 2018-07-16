@@ -21,6 +21,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+int gnusocial_server_version(gnusocial_session_t *session, char *version,
+			unsigned int version_size)
+{
+    int result = gnusocial_api_request(session, NULL, "statusnet/version.xml");
+    if (!result && FindXmlError(session->xml, strlen(session->xml)) > 0) {
+    	    session->errormsg = calloc(1, GNUSOCIAL_ERROR_SIZE);
+    	    parseXml(session->xml, strlen(session->xml), "<error>", 7,
+    	    	    session->errormsg, GNUSOCIAL_ERROR_SIZE);
+    	    result = GNUSOCIAL_API_ERROR;
+    }
+    else if (!result)
+    	    parseXml(session->xml, strlen(session->xml), "<error", 7,
+    	    	    version, version_size);
+    return result;
+}
+
 int gs_get_number_of_groups(gnusocial_account_t account)
 {
     char source[128];
