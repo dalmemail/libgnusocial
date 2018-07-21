@@ -106,36 +106,17 @@ int gnusocial_api_request(gnusocial_session_t *session, char *send, char *xml_do
     return result;
 }
 
-int gnusocial_verify_account(gnusocial_account_t account)
+int gnusocial_verify_account(gnusocial_session_t *session)
 {
-    int ret = 0;
-    char *xml_data =
-        gnusocial_api_request(account, NULL, "account/verify_credentials.xml");
-    int xml_data_size = strlen(xml_data);
-    char error[512];
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
-        printf("Error: %s\n", error);
-        ret = -1;
+    int ret = gnusocial_api_request(session, NULL, "account/verify_credentials.xml");
+    if ((session->errormsg = parser_get_error(session->xml)))
+    	    ret = GNUSOCIAL_API_ERROR;
+    // Temporal until we found if this is needed
+    else if (parseXml(session->xml, strlen(session->xml), "<screen_name>", 13, NULL, 0) < 0) {
+    	session->errormsg = calloc(1, GNUSOCIAL_ERROR_SIZE);
+        snprintf(session->errormsg, GNUSOCIAL_ERROR_SIZE, "Error: Connecting to @%s@%s\n",
+        	session->account->user, session->account->server);
+        ret = GNUSOCIAL_ERROR_INVALID_CREDENTIALS;
     }
-    else if (parseXml(xml_data, xml_data_size, "<screen_name>", 13, "", 0) < 0) {
-        printf("Error: Connecting to @%s@%s\n", account.user, account.server);
-        /*if (loglevel>=LOG_DEBUG) {
-            int i;
-            for (i = 0; i < xml_data_size; ++i) {
-              if (xml_data[i] == '\0') break;
-              // fprintf(stderr, "%02x ", (unsigned char)xml_data[i]);
-              if (xml_data[i] == '\\') {
-                fprintf(stderr, "\\\\");
-              } else if (isprint(xml_data[i])) {
-                fprintf(stderr, "%c", (unsigned char)xml_data[i]);
-              } else {
-                fprintf(stderr, "\\x%2x", (unsigned char)xml_data[i]);
-              }
-            }
-            fprintf(stderr, "\n");
-        }*/
-        ret = -1;
-    }
-    free(xml_data);
     return ret;
 }

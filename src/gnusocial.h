@@ -218,10 +218,10 @@ gnusocial_account_info_t gs_get_user_info(gnusocial_account_t account, char *sou
 
 /**
  * @brief Checks if user credentials are correct
- * @param A gss_account structure to check
+ * @param session Session structure that contains account credentials
  */
 
-int gnusocial_verify_account(gnusocial_account_t account);
+int gnusocial_verify_account(gnusocial_session_t *session);
 
 /**
  * @brief Gets group information espeficied by its ID
