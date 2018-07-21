@@ -286,12 +286,14 @@ void gs_print_users_array_info(gnusocial_account_t account,
 
 /**
  * @brief Sends a formatted content to the server API
- * @param account A gss_structure to authenticate into the server
- * @param send The content to send to the server
- * @param xml_doc Where to send the content using 'account'
+ * @param session Session structure that contains account information and where
+ * the data requested to the API is stored
+ * @param send The formatted content to be sent to the server API
+ * @param xml_doc The XML file at GNUsocial API to where the request will be made
+ * Documentation: https://gnusocial.net/doc/twitterapi
  */
 
-char *gnusocial_api_request(gnusocial_account_t account, char *send, char *xml_doc);
+int gnusocial_api_request(gnusocial_session_t *session, char *send, char *xml_doc);
 
 /**
  * @brief Get the number of groups a user is member of
