@@ -42,7 +42,7 @@ int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, c
     }
     start_pos = pos+1;
     if (ret == 0) {
-        for (i = 0; (xml_data[start_pos+i] != '<' ||xml_data[start_pos+i+1] != '/') && i < output_size; i++) {
+        for (i = 0; (xml_data[start_pos+i] != '<' ||xml_data[start_pos+i+1] != '/') && i < (output_size-1); i++) {
             output[i] = xml_data[start_pos+i];
         }
         ret = (start_pos+i);
@@ -50,28 +50,42 @@ int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, c
     return ret;
 }
 
-gnusocial_status_t makeStatusFromRawSource(char *raw_data, int data_size)
+gnusocial_status_t parser_get_status(char *xml_data)
 {
-    gnusocial_status_t out_status;
+    gnusocial_status_t status;
+    int data_size = strlen(xml_data);
     char buffer[16];
-    parseXml(raw_data, data_size, "<text>", 6, out_status.text, sizeof(out_status.text));
-    parseXml(raw_data, data_size, "<id>", 4, buffer, sizeof(buffer));
-    out_status.id = atoi(buffer);
-    parseXml(raw_data, data_size, "<screen_name>", 13, out_status.author_screen_name, sizeof(out_status.author_screen_name));
-    parseXml(raw_data, data_size, "<in_reply_to_status_id>", 23, buffer, sizeof(buffer));
-    out_status.in_reply_to_id = atoi(buffer);
-    parseXml(raw_data, data_size, "<in_reply_to_screen_name>", 25, out_status.in_reply_to_user, sizeof(out_status.in_reply_to_user));
-    parseXml(raw_data, data_size, "<created_at>", 12, out_status.date, sizeof(out_status.date));
-    return out_status;
+    if (parseXml(xml_data, data_size, "<text>", 6, status.text, sizeof(status.text)) < 0)
+    	    status.text[0] = 0;
+
+    if (parseXml(xml_data, data_size, "<id>", 4, buffer, sizeof(buffer)) > 0)
+    	    status.id = atoi(buffer);
+    else
+    	    status.id = 0;
+
+    if (parseXml(xml_data, data_size, "<screen_name>", 13, status.author_screen_name, sizeof(status.author_screen_name)) < 0)
+    	    status.author_screen_name[0] = 0;
+
+    if (parseXml(xml_data, data_size, "<in_reply_to_status_id>", 23, buffer, sizeof(buffer)) > 0)
+    	    status.in_reply_to_id = atoi(buffer);
+    else
+    	    status.in_reply_to_id = 0;
+
+    if (parseXml(xml_data, data_size, "<in_reply_to_screen_name>", 25, status.in_reply_to_user, sizeof(status.in_reply_to_user)) < 0)
+    	    status.in_reply_to_user[0] = 0;
+
+    if (parseXml(xml_data, data_size, "<created_at>", 12, status.date, sizeof(status.date)) < 0)
+    	    status.date[0] = 0;
+
+    return status;
 }
 
-int FindXmlError(char *xml_data, int xml_data_size)
+char *parser_get_xml_error(char *xml_data)
 {
-    int ret = 0;
-    char error[512];
-    if ((ret = parseXml(xml_data, xml_data_size, "<error>",
-                           7, error, sizeof(error))) > 0) {
-        printf("Error: %s\n", error);
+    char *errormsg = calloc(1, GNUSOCIAL_ERROR_SIZE);
+    if (parseXml(xml_data, strlen(xml_data), "<error>", 7, errormsg, GNUSOCIAL_ERROR_SIZE) <= 0) {
+        free(errormsg);
+        return NULL;
     }
-    return ret;
+    return errormsg;
 }

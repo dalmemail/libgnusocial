@@ -15,10 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// #include "gnusocial.h"
- 
+/**
+ * @brief Parses a concrete tag into a XML data content
+ * @param xml_data Pointer to the XML file content
+ * @param xml_data_size Size (length) of that content
+ * @param tofind Pointer to the XML tag e.g. "<text>"
+ * @param tofind_size Length of the tag string
+ * @param output Pointer to the string where the parsed content will be stored
+ * @param output_size Size of that string
+ * @return The last char written into output position in xml_data or -1 if tag not found
+ */
+
 int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, char *output, int output_size);
 
-gnusocial_status_t makeStatusFromRawSource(char *raw_data, int data_size);
+/**
+ * @brief Parses XML content into a gnusocial_status_t
+ * @param xml_data Pointer to the XML file content
+ * @return A gnusocial_status_t
+ */
+gnusocial_status_t parser_get_status(char *xml_data);
 
-int FindXmlError(char *xml_data, int xml_data_size);
+/**
+ * @brief Parses XML content to find an error
+ * @param xml_data Pointer to the XML file content
+ * @return A pointer to the error string
+ */
+
+char *parser_get_xml_error(char *xml_data);
