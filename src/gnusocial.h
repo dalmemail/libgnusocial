@@ -73,18 +73,12 @@ struct gnusocial_group_info {
 
 typedef struct gnusocial_group_info gnusocial_group_info_t;
 
-struct gnusocial_little_group_info {
-    int id;
-    char nickname[MAX_GROUP_NICKNAME];
-    char description[MAX_DESCRIPTION];
-};
-
-typedef struct gnusocial_little_group_info gnusocial_little_group_info_t;
-
 struct gnusocial_session {
 	gnusocial_account_t *account;
 	gnusocial_status_t *status;
 	unsigned int n_status;
+	gnusocial_group_info_t *groups;
+	unsigned int n_groups;
 	char *errormsg;
 	char *xml;
 };
@@ -225,39 +219,38 @@ int gnusocial_verify_account(gnusocial_session_t *session);
 
 /**
  * @brief Gets group information espeficied by its ID
- * @param account A gss_account structure to authenticate the user into the server
+ * @param session Session structure to authenticate the user into the server
  * @param id The group ID to get the info
- * @return A group_info structure with all the info
+ * @return ZERO if succeed, a negative integer if error
  */
 
-gnusocial_group_info_t gs_get_group_info(gnusocial_account_t account, int id);
+int gnusocial_get_group_info(gnusocial_session_t *session, int id);
 
 /**
  * @brief Join a group espeficied by its ID
- * @param account A gss_account structure to authenticate the user into the server
+ * @param session Session structure to authenticate the user into the server
  * @param id The group ID to join
  */
 
-void gnusocial_join_group(gnusocial_account_t account, int id);
+int gnusocial_join_group(gnusocial_session_t *session, int id);
 
 /**
  * @brief Leave a group especified by its ID
- * @param account A gss_account structure to authenticate the user into the server
+ * @param session Session structure to authenticate the user into the server
  * @param id The group ID to leave
  */
 
-void gnusocial_leave_group(gnusocial_account_t account, int id);
+int gnusocial_leave_group(gnusocial_session_t *session, int id);
 
 /**
  * @brief Gets little information of a number of groups especified by a 'n_groups'
- * @param account A gss_account structure to authenticate the user into the server
+ * @param session Session structure to authenticate the user into the server
  * @param n_groups The number of groups to be readed
- * @param group_timeline Can be USER_GROUPS (ZERO) or SERVER_GROUPS (1)
- * @return An array of little_group_info structures with all the info
+ * @param timeline The timeline (path to XML file) to make the request 
+ * @return ZERO if succeed, a negative integer if error
  */
 
-gnusocial_little_group_info_t *gs_list_groups(gnusocial_account_t account,
-                                              int n_groups, int group_timeline);
+int gnusocial_list_groups(gnusocial_session_t *session, int n_groups, char *timeline);
 
 /**
  * @brief Start to follow a user especified by its screen_name
@@ -303,7 +296,7 @@ int gnusocial_api_request(gnusocial_session_t *session, char *send, char *xml_do
  * @return The number of groups of which "username" is member, or a negative error code
  */
 
-int gnusocial_get_number_of_groups(gnusocial_account_t *session, const char *username);
+int gnusocial_get_number_of_groups(gnusocial_session_t *session, const char *username);
 
 /**
  * @brief Populates a session structure with login details

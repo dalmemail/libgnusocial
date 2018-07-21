@@ -46,6 +46,7 @@ int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, c
             output[i] = xml_data[start_pos+i];
         }
         ret = (start_pos+i);
+        output[i] = 0;
     }
     return ret;
 }
@@ -78,6 +79,54 @@ gnusocial_status_t parser_get_status(char *xml_data)
     	    status.date[0] = 0;
 
     return status;
+}
+
+gnusocial_group_info_t parser_get_group_info(char *xml_data)
+{
+    gnusocial_group_info_t group;
+    int xml_data_size = strlen(xml_data);
+    char buffer[256];
+
+    if (parseXml(xml_data, xml_data_size, "<id>", 4, buffer, sizeof(buffer)) < 0)
+        group.id = 0;
+    else
+    	group.id = atoi(buffer);
+
+    if (parseXml(xml_data, xml_data_size, "<url>", 5, group.url, sizeof(group.url)) < 0)
+        group.url[0] = 0;
+
+    if (parseXml(xml_data, xml_data_size, "<nickname>", 10, group.nickname, sizeof(group.nickname)) < 0)
+        group.nickname[0] = 0;
+
+    if (parseXml(xml_data, xml_data_size, "<fullname>", 10, group.fullname, sizeof(group.fullname)) < 0)
+        group.fullname[0] = 0;
+
+    if (parseXml(xml_data, xml_data_size, "<member>", 8, buffer, sizeof(buffer)) > 0) {
+        if (!strcmp(buffer, "true")) {
+            group.member = 1;
+        }
+        else {
+            group.member = 0;
+        }
+    }
+    else {
+        group.member = GNUSOCIAL_API_ERROR_TAG_NOT_FOUND;
+    }
+
+    if (parseXml(xml_data, xml_data_size, "<admin_count>", 13, buffer, sizeof(buffer)) > 0)
+        group.admins = atoi(buffer);
+    else
+            group.admins = GNUSOCIAL_API_ERROR_TAG_NOT_FOUND;
+
+    if (parseXml(xml_data, xml_data_size, "<member_count>", 14, buffer, sizeof(buffer)) > 0)
+        group.members = atoi(buffer);
+    else
+        group.members = GNUSOCIAL_API_ERROR_TAG_NOT_FOUND;
+
+    if (parseXml(xml_data, xml_data_size, "<description>", 13, group.description, sizeof(group.description)) < 0)
+        group.description[0] = 0;
+
+    return group;
 }
 
 char *parser_get_error(char *xml_data)

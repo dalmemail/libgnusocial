@@ -36,6 +36,14 @@ int parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, c
 gnusocial_status_t parser_get_status(char *xml_data);
 
 /**
+ * @brief Parses XML content into a gnusocial_group_info_t
+ * @param xml_data Pointer to the XML file content
+ * @return A gnusocial_group_info_t
+ */
+
+gnusocial_group_info_t parser_get_group_info(char *xml_data);
+
+/**
  * @brief Parses XML content to find an error
  * @param xml_data Pointer to the XML file content
  * @return A pointer to the error string
