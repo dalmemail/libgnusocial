@@ -294,25 +294,27 @@ void gs_print_users_array_info(gnusocial_account_t account,
 char *gnusocial_api_request(gnusocial_account_t account, char *send, char *xml_doc);
 
 /**
- * @brief Returns the number of groups in which "account" is
- * @param account A gss_account structure to authenticate the user into the server
- * @return The number of groups in which "account" is, or ZERO if fail
+ * @brief Get the number of groups a user is member of
+ * @param session Session structure
+ * @param username Name of the user of whom we want to know the number of groups he is
+ * member of
+ * @return The number of groups of which "username" is member, or a negative error code
  */
 
-int gs_get_number_of_groups(gnusocial_account_t account);
+int gnusocial_get_number_of_groups(gnusocial_account_t *session, const char *username);
 
 /**
- * @brief Populates an account structure with login details
- * @param acc Account structure
+ * @brief Populates a session structure with login details
+ * @param session Session structure
  * @param protocol https
  * @param user Username
  * @param server Domain name of the gnusocial server
  * @param password Login password
  * @param socks_proxy Optional socks proxy address:port
+ * @return ZERO if succeed, negative integer if an error found
  */
-void gnusocial_init_account(gnusocial_account_t * acc, char * protocol,
-                     char * user, char * server, char * password,
-                     char * socks_proxy);
+int gnusocial_set_account(gnusocial_session_t *session, char *protocol, 
+	char *user, char *server, char *password, char *socks_proxy);
 
 /**
  * @brief Export followed users to a text file

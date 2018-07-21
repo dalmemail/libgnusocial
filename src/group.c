@@ -158,3 +158,21 @@ gnusocial_little_group_info_t *gs_list_groups(gnusocial_account_t account,
     free(xml_data);
     return groups;
 }
+
+int gnusocial_get_number_of_groups(gnusocial_session_t *session, const char *username)
+{
+    char source[128];
+    snprintf(source, 128, "&screen_name=%s", username);
+    int request_code = gnusocial_api_request(session, source, "users/show.xml");
+    if (request_code < 0)
+    	    return request_code;
+
+    char n_groups[32] = "0";
+    if ((session->errormsg = parser_get_error(session->xml)))
+    	    return GNUSOCIAL_API_ERROR;
+    else
+        if (parseXml(session->xml, strlen(session->xml), "<groups_count>", 14, n_groups, 32) > 0)
+        	return atoi(n_groups);
+        else
+        	return GNUSOCIAL_API_TAG_NOT_FOUND;
+}

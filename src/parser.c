@@ -80,7 +80,7 @@ gnusocial_status_t parser_get_status(char *xml_data)
     return status;
 }
 
-char *parser_get_xml_error(char *xml_data)
+char *parser_get_error(char *xml_data)
 {
     char *errormsg = calloc(1, GNUSOCIAL_ERROR_SIZE);
     if (parseXml(xml_data, strlen(xml_data), "<error>", 7, errormsg, GNUSOCIAL_ERROR_SIZE) <= 0) {

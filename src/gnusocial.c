@@ -25,33 +25,12 @@ int gnusocial_server_version(gnusocial_session_t *session, char *version,
 			unsigned int version_size)
 {
     int result = gnusocial_api_request(session, NULL, "statusnet/version.xml");
-    if (!result && FindXmlError(session->xml, strlen(session->xml)) > 0) {
-    	    session->errormsg = calloc(1, GNUSOCIAL_ERROR_SIZE);
-    	    parseXml(session->xml, strlen(session->xml), "<error>", 7,
-    	    	    session->errormsg, GNUSOCIAL_ERROR_SIZE);
+    if (!result && (session->errormsg = parser_get_error(session->xml)))
     	    result = GNUSOCIAL_API_ERROR;
-    }
     else if (!result)
-    	    parseXml(session->xml, strlen(session->xml), "<error", 7,
+    	    parseXml(session->xml, strlen(session->xml), "<version>", 9,
     	    	    version, version_size);
     return result;
-}
-
-int gs_get_number_of_groups(gnusocial_account_t account)
-{
-    char source[128];
-    snprintf(source, 128, "&screen_name=%s", account.user);
-    char *xml_data = gnusocial_api_request(account, source, "users/show.xml");
-    char error[512];
-    char n_groups[32] = "0";
-    int xml_data_size = strlen(xml_data);
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
-        printf("Error: %s\n", error);
-    }
-    else {
-        parseXml(xml_data, xml_data_size, "<groups_count>", 14, n_groups, 32);
-    }
-    return atoi(n_groups);
 }
 
 static int check_account_credentials_length(char *protocol, char *user, char *server,

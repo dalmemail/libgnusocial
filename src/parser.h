@@ -41,4 +41,4 @@ gnusocial_status_t parser_get_status(char *xml_data);
  * @return A pointer to the error string
  */
 
-char *parser_get_xml_error(char *xml_data);
+char *parser_get_error(char *xml_data);
