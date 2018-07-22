@@ -133,53 +133,56 @@ gnusocial_account_info_t gs_get_my_account_info(gnusocial_account_t account, int
 
 /**
  * @brief Post a new notice as the authenticating user
- * @param account A gss_account structure to authenticate the user into the server
+ * @param session A session structure to authenticate the user into the server
  * @param msg String that contains the notice content to post
  */
 
-void gnusocial_post_status(gnusocial_account_t account, char *msg);
+int gnusocial_post_status(gnusocial_session_t *session, char *msg);
 
 /**
  * @brief Favorites the status specified in the ID parameter as the authenticating user
  * @param account A gss_account structure to authenticate the user into the server
  * @param id The notice ID to favorite
+ * @return zero if succeed, negative integer if error
  */
 
-void gnusocial_favorite_status(gnusocial_account_t account, int id);
+int gnusocial_favorite_status(gnusocial_session_t *session, int id);
 
 /**
  * @brief Un-favorites the status specified in the ID parameter as the authenticating user
  * @param account A gss_account structure to authenticate the user into the server
  * @param id The notice ID to un-favorite
+ * @return zero if succeed, a negative integer if error
  */
 
-void gnusocial_unfavorite_status(gnusocial_account_t account, int id);
+int gnusocial_unfavorite_status(gnusocial_session_t *session, int id);
 
 /**
  * @brief Prints a single notice, specified by the id parameter
- * @param account A gss_account structure to authenticate the user into the server
+ * @param session A session structure to authenticate the user into the server
  * @param id The notice ID to print
- * @param result An intenger to store Non-ZERO if there is an error, ZERO if not
- * @return An status structure with the status information
+ * @return zero if succeed, a negative integer if error
  */
 
-gnusocial_status_t gnusocial_search_status(gnusocial_account_t account, int id, int *result);
+int gnusocial_search_status(gnusocial_session_t *session, int id);
 
 /**
  * @brief Destroys the notice specified by the required ID parameter
  * @param account A gss_account structure to authenticate the user into the server
  * @param id The notice ID to destroy
+ * @return zero if suceed, negative integer if error
  */
 
-void gnusocial_delete_status(gnusocial_account_t account, int id);
+int gnusocial_delete_status(gnusocial_session_t *session, int id);
 
 /**
  * @brief Post a new notice in reply specified by the required ID parameter
  * @param account A gss_account structure to authenticate the user into the server
  * @param id The notice ID to reply
+ * @return zero if succeed, a negative integer if error
  */
 
-void gnusocial_reply_status(gnusocial_account_t account, int id, char *msg);
+int gnusocial_reply_status(gnusocial_session_t *session, int id, char *msg);
 
 /**
  * @brief Read a number of status from 'timeline'
@@ -193,12 +196,12 @@ gnusocial_status_t *gnusocial_read_timeline(gnusocial_account_t account, char *t
 
 /**
  * @brief Repeats a notice espeficied by its ID
- * @param account A gss_account structure to authenticate the user into the server
+ * @param session A session structure to authenticate the user into the server
  * @param id The notice ID to repeat
  * @param code Should be 1 to work correctly
  */
 
-void gnusocial_repeat_status(gnusocial_account_t account, int id, int code);
+int gnusocial_repeat_status(gnusocial_session_t *session, int id, int code);
 
 /**
  * @brief Gets user information especified by "source"
