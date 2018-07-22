@@ -125,15 +125,6 @@ char *gnusocial_session_error(gnusocial_session_t *session);
 void gnusocial_session_reset(gnusocial_session_t *session);
 
 /**
- * @brief Downloads the user information from the GnuSocial server
- * @param account A gss_account structure to send the request to the GnuSocial server
- * @param result An intenger to store if there is an error or not. ZERO if not, Non-ZERO if yes
- * @return The user information as an account_info structure
- */
-
-gnusocial_account_info_t gs_get_my_account_info(gnusocial_account_t account, int *result);
-
-/**
  * @brief Post a new notice as the authenticating user
  * @param session A session structure to authenticate the user into the server
  * @param msg String that contains the notice content to post
@@ -207,13 +198,13 @@ int gnusocial_repeat_status(gnusocial_session_t *session, int id, int code);
 
 /**
  * @brief Gets user information especified by "source"
- * @param account A gss_account structure to authenticate the user into the server
+ * @param session Session structure to authenticate the user into the server
  * @param source The user to get the information. Can be used the user ID or user SCREEN_NAME
  * Example: source="&id=1" source="&screen_name=4dmin"
- * @return A account_info structure with all the info
+ * @return zero if succeed, negative integer if error
  */
 
-gnusocial_account_info_t gs_get_user_info(gnusocial_account_t account, char *source);
+int gnusocial_get_user_info(gnusocial_session_t *session, char *source);
 
 /**
  * @brief Checks if user credentials are correct
@@ -259,19 +250,21 @@ int gnusocial_list_groups(gnusocial_session_t *session, int n_groups, char *time
 
 /**
  * @brief Start to follow a user especified by its screen_name
- * @param account A gss_account structure to authenticate the user into the server
+ * @param session Session structure to authenticate the user into the server
  * @param screen_name The user screen_name to follow
+ * @return zero if succeed, negative integer if error
  */
 
-void gnusocial_follow_user(gnusocial_account_t account, char *screen_name);
+int gnusocial_follow_user(gnusocial_session_t *session, char *screen_name);
 
 /**
  * @brief Stop to follow a user espeficied by its screen_name
- * @param account A gss_account structure to authenticate the user into the server
+ * @param session Session structure to authenticate the user into the server
  * @param screen_name The user to unfollow
+ * @return zero if succeed, negative integer if error
  */
 
-void gnusocial_unfollow_user(gnusocial_account_t account, char *screen_name);
+int gnusocial_unfollow_user(gnusocial_session_t *session, char *screen_name);
 
 /**
  * @brief Prints a list of users from a especified list
@@ -279,8 +272,8 @@ void gnusocial_unfollow_user(gnusocial_account_t account, char *screen_name);
  * @param n_users The number of users to read
  */
 
-void gs_print_users_array_info(gnusocial_account_t account,
-                               char *source, int n_users);
+/*void gs_print_users_array_info(gnusocial_account_t account,
+                               char *source, int n_users);*/
 
 /**
  * @brief Sends a formatted content to the server API
@@ -318,17 +311,20 @@ int gnusocial_set_account(gnusocial_session_t *session, char *protocol,
 
 /**
  * @brief Export followed users to a text file
- * @param account Account structure
+ * @param session Session structure
  * @param filename File to be created
+ * @return zero if succeed, negative integer if error
  */
-void gnusocial_export_users(gnusocial_account_t account, char *filename);
+
+int gnusocial_export_users(gnusocial_session_t *session, char *filename);
 
 /**
  * @brief Import users from a text file
- * @param account Account structure
+ * @param session Session structure
  * @param filename File containing exported user follows
  */
-void gnusocial_import_users(gnusocial_account_t account, char *filename);
+
+void gnusocial_import_users(gnusocial_session_t *session, char *filename);
 
 /**
  * @brief saves the avatar image for the given local user
