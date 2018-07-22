@@ -44,6 +44,14 @@ gnusocial_status_t parser_get_status(char *xml_data);
 gnusocial_group_info_t parser_get_group_info(char *xml_data);
 
 /**
+ * @brief Parses XML content into a gnusocial_account_info_t
+ * @param xml_data Pointer to the XML file content
+ * @return A gnusocial_account_info_t
+ */
+
+gnusocial_account_info_t parser_get_account_info(char *xml_data);
+
+/**
  * @brief Parses XML content to find an error
  * @param xml_data Pointer to the XML file content
  * @return A pointer to the error string

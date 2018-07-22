@@ -129,6 +129,51 @@ gnusocial_group_info_t parser_get_group_info(char *xml_data)
     return group;
 }
 
+gnusocial_account_info_t parser_get_account_info(char *xml_data)
+{
+    gnusocial_account_info_t info;
+    int xml_data_size = strlen(xml_data);
+    char buffer[256];
+
+    if (parseXml(xml_data, xml_data_size, "<name>", 6, info.name, sizeof(info.name)) < 0)
+        info.name[0] = 0;
+
+    if (parseXml(xml_data, xml_data_size, "<screen_name>", 13, info.screen_name, sizeof(info.screen_name)) < 0)
+        info.screen_name[0] = 0;
+
+    if (parseXml(xml_data, xml_data_size, "<location>", 10, info.location, sizeof(info.location)) < 0)
+        info.location[0] = 0;
+
+    if (parseXml(xml_data, xml_data_size, "<description>", 13, info.description, sizeof(info.description)) < 0)
+        info.description[0] = 0;
+
+    if (parseXml(xml_data, xml_data_size, "<url>", 5, info.url, sizeof(info.url)) < 0)
+        info.url[0] = 0;
+
+    if (parseXml(xml_data, xml_data_size, "<followers_count>", 17, buffer, sizeof(buffer)) > 0)
+        info.followers = atoi(buffer);
+    else
+        info.followers = GNUSOCIAL_API_ERROR_TAG_NOT_FOUND;
+
+    if (parseXml(xml_data, xml_data_size, "<friends_count>", 15, buffer, sizeof(buffer)) > 0)
+        info.friends = atoi(buffer);
+    else
+        info.friends = GNUSOCIAL_API_ERROR_TAG_NOT_FOUND;
+
+    if (parseXml(xml_data, xml_data_size, "<statuses_count>", 16, buffer, sizeof(buffer)) > 0)
+        info.statuses = atoi(buffer);
+    else
+        info.statuses = GNUSOCIAL_API_ERROR_TAG_NOT_FOUND;
+
+    if (parseXml(xml_data, xml_data_size, "<profile_image_url>", 19, info.profile_image_url, sizeof(info.profile_image_url)) < 0)
+        info.profile_image_url[0] = 0;
+
+    if (parseXml(xml_data, xml_data_size, "<profile_image_url_profile_size>", 32, info.profile_image_url_profile_size, sizeof(info.profile_image_url_profile_size)) < 0)
+        info.profile_image_url_profile_size[0] = 0;
+
+    return info;
+}
+
 char *parser_get_error(char *xml_data)
 {
     char *errormsg = calloc(1, GNUSOCIAL_ERROR_SIZE);
