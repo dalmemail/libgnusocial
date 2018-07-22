@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int gs_download_image_from_url(char * image_url, char * image_filename)
+static int _download_image_from_url(char * image_url, char * image_filename)
 {
     CURL *image;
     CURLcode imgresult;
@@ -77,54 +77,44 @@ static int gs_download_image_from_url(char * image_url, char * image_filename)
     return 0;
 }
 
-int gs_get_user_avatar(gnusocial_account_t account, char * username,
-                       char * avatar_filename)
+int gnusocial_get_user_avatar(gnusocial_session_t *session, char *username,
+                       char *avatar_filename)
 {
-    char source[512];
-    snprintf(source, sizeof(source), "screen_name=%s", username);
-    char *xml_data = gnusocial_api_request(account, source, "users/show.xml");
-    char error[512];
-    char output[512];
-    int xml_data_size = strlen(xml_data);
-    gnusocial_account_info_t info;
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
-        printf("Error: %s\n", error);
-        info.screen_name[0] = '\0';
-        free(xml_data);
-        return 1;
-    }
-    else {
-        if (parseXml(xml_data, xml_data_size,
-                        "<profile_image_url_profile_size>", 32, output, 512) > 0) {
-            gs_download_image_from_url(output, avatar_filename);
-            free(xml_data);
-            return 0;
+    char flags[256];
+    snprintf(flags, sizeof(flags), "screen_name=%s", username);
+    int ret = gnusocial_api_request(session, flags, "users/show.xml");
+
+    if (!ret && (session->errormsg = parser_get_error(session->xml)))
+    	ret = GNUSOCIAL_API_ERROR;
+
+    if (!ret) {
+    	char avatar_url[MAX_URL];
+        if (parseXml(session->xml, strlen(session->xml),
+                        "<profile_image_url_profile_size>", 32, avatar_url, sizeof(avatar_url)) > 0) {
+            _download_image_from_url(avatar_url, avatar_filename);
         }
     }
-    free(xml_data);
-    return 2;
+    return ret;
 }
 
-int gs_get_follow_avatar(gnusocial_account_t account, char * username,
-                         char * avatar_filename)
+int gnusocial_get_follow_avatar(gnusocial_session_t *session, char *username,
+                         char *avatar_filename)
 {
-    FILE * fp;
-    char count[32];
-    snprintf(count, 32, "count=%d", 99999);
-    char *xml_data = gnusocial_api_request(account,count,GNUSOCIAL_FRIENDS_LIST);
-    int xml_data_size = strlen(xml_data);
-    char error[512];
+    FILE *fp;
+    char flags[32];
+    snprintf(flags, sizeof(flags), "count=%d", 99999);
+    int ret = gnusocial_api_request(session, flags, GNUSOCIAL_FRIENDS_LIST);
 
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
-        printf("Error: %s\n", error);
-    }
-    else if (xml_data_size > 0) {
+    if (!ret && (session->errormsg = parser_get_error(session->xml)))
+    	    ret = GNUSOCIAL_API_ERROR;
+
+    if (!ret && *session->xml) {
         char screen_name[64];
         char avatar_image_url[512];
         int start_status_point = 0;
         int real_status_point = 0;
-        char *array_data;
-        array_data = &xml_data[0];
+        char *array_data = &session->xml[0];
+        int xml_data_size = strlen(session->xml);
         int i;
         for (i = 0; i < 99999 && (real_status_point+13) < xml_data_size; i++) {
             parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>",
@@ -132,21 +122,21 @@ int gs_get_follow_avatar(gnusocial_account_t account, char * username,
             if (strcmp(screen_name, username) == 0) {
                 parseXml(array_data, (xml_data_size-real_status_point),
                             "<profile_image_url_profile_size>", 32, avatar_image_url, 512);
-                gs_download_image_from_url(avatar_image_url, avatar_filename);
-                free(xml_data);
-                return 0;
+                _download_image_from_url(avatar_image_url, avatar_filename);
+                return ret;
             }
             start_status_point =
                 parseXml(array_data,
-                            (xml_data_size-real_status_point), "</user>", 7, "", 0);
+                            (xml_data_size-real_status_point), "</user>", 7, NULL, 0);
             real_status_point += start_status_point;
-            array_data = &xml_data[real_status_point];
+            array_data = &session->xml[real_status_point];
         }
     }
     else {
-        printf("Error: Reading users from '%s://%s/api/%s'\n",
-               account.protocol, account.server, GNUSOCIAL_FRIENDS_LIST);
+    	session->errormsg = calloc(1, GNUSOCIAL_ERROR_SIZE);
+        snprintf(session->errormsg, GNUSOCIAL_ERROR_SIZE, "Error: Reading users from '%s://%s/api/%s'\n",
+               session->account->protocol, session->account->server, GNUSOCIAL_FRIENDS_LIST);
+        ret = GNUSOCIAL_UNKNOWN_ERROR;
     }
-    free(xml_data);
-    return 1;
+    return ret;
 }

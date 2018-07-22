@@ -327,22 +327,22 @@ void gnusocial_import_users(gnusocial_account_t account, char *filename);
 
 /**
  * @brief saves the avatar image for the given local user
- * @param account Account structure
+ * @param session Session structure
  * @param username username on the local server
  * @param avatar_filename File to save
  * @returns zero on success
  */
-int gs_get_user_avatar(gnusocial_account_t account, char * username,
-                       char * avatar_filename);
+int gnusocial_get_user_avatar(gnusocial_session_t *session, char *username,
+                       char *avatar_filename);
 
 /**
  * @brief saves the avatar image for a user being followed
- * @param account Account structure
+ * @param session Session structure
  * @param username username being followed
  * @param avatar_filename File to save
  * @returns zero on success
  */
-int gs_get_follow_avatar(gnusocial_account_t account, char * username,
-                         char * avatar_filename);
+int gnusocial_get_follow_avatar(gnusocial_session_t *session, char *username,
+                         char *avatar_filename);
 
 #endif
