@@ -186,13 +186,13 @@ int gnusocial_reply_status(gnusocial_session_t *session, int id, char *msg);
 
 /**
  * @brief Read a number of status from 'timeline'
- * @param account A gss_account structure to authenticate the user into the server
+ * @param session A session structure to authenticate the user into the server
  * @param timeline The timeline path to read
  * @param n_status The number of status to read from timeline
- * @return An array of status
+ * @return zero if succeed, negative integer if not (error)
  */
 
-gnusocial_status_t *gnusocial_read_timeline(gnusocial_account_t account, char *timeline, int n_status);
+int gnusocial_read_timeline(gnusocial_session_t *session, char *timeline, int n_status);
 
 /**
  * @brief Repeats a notice espeficied by its ID

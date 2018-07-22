@@ -22,37 +22,33 @@
 #include <stdlib.h>
 #include <string.h>
 
-gnusocial_status_t *gnusocial_read_timeline(gnusocial_account_t account,
+int gnusocial_read_timeline(gnusocial_session_t *session,
                                      char *timeline, int n_status)
 {
-    gnusocial_status_t *status_list =
-        (gnusocial_status_t*)malloc(n_status * sizeof(gnusocial_status_t));
-    char count[32];
-    snprintf(count, 32, "count=%d", n_status);
-    char *xml_data = gnusocial_api_request(account,count,timeline);
-    int xml_data_size = strlen(xml_data);
-    char error[512];
-    int i;
+    session->status = calloc(n_status, sizeof(gnusocial_status_t));
+    char flags[32];
+    snprintf(flags, sizeof(flags), "count=%d", n_status);
+    int ret = gnusocial_api_request(session, flags, timeline);
+    if (!ret && (session->errormsg = parser_get_error(session->xml)))
+    	    ret = GNUSOCIAL_API_ERROR;
 
-    for (i = 0; i < n_status; i++) {
-        status_list[i].id = 0;
-    }
-    if (parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
-        printf("Error: %s\n", error);
-    }
-    else {
+    if (!ret && *session->xml) {
         int i;
         int start_status_point = 0;
         int real_status_point = 0;
         char *status_data;
-        status_data = &xml_data[0];
+        status_data = &session->xml[0];
+        int xml_data_size = strlen(session->xml);
         for (i = 0; i < n_status && (real_status_point+13) < xml_data_size; i++) {
-            status_list[i] = makeStatusFromRawSource(status_data, strlen(status_data));
-            start_status_point = parseXml(status_data, (xml_data_size-real_status_point), "</status>", 9, "", 0);
+            session->status[i] = parser_get_status(status_data);
+            start_status_point = parseXml(status_data, (xml_data_size-real_status_point), "</status>", 9, NULL, 0);
+            if (start_status_point < 0) {
+            	    session->n_status = i;
+            	    return ret;
+            }
             real_status_point += start_status_point;
-            status_data = &xml_data[real_status_point];
+            status_data = &session->xml[real_status_point];
         }
     }
-    free(xml_data);
-    return status_list;
+    return ret;
 }
