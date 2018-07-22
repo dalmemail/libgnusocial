@@ -36,6 +36,9 @@ void gnusocial_session_free(gnusocial_session_t *session)
 
 	if (session->groups)
 		free(session->groups);
+
+	if (session->accounts)
+		free(session->accounts);
 	
 	if (session->errormsg)
 		free(session->errormsg);
@@ -69,6 +72,11 @@ void gnusocial_session_reset(gnusocial_session_t *session)
 	if (session->groups) {
 		free(session->groups);
 		session->n_groups = 0;
+	}
+
+	if (session->accounts) {
+		free(session->accounts);
+		session->n_accounts = 0;
 	}
 	
 	if (session->errormsg)

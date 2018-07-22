@@ -79,6 +79,8 @@ struct gnusocial_session {
 	unsigned int n_status;
 	gnusocial_group_info_t *groups;
 	unsigned int n_groups;
+	gnusocial_account_info_t *accounts;
+	unsigned int n_accounts;
 	char *errormsg;
 	char *xml;
 };
