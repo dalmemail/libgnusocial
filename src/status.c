@@ -105,6 +105,7 @@ int gnusocial_search_status(gnusocial_session_t *session, int id)
     if (!ret && *session->xml) {
     	    session->status = calloc(1, sizeof(gnusocial_status_t));
     	    session->status[0] = parser_get_status(session->xml);
+    	    session->n_status = 1;
     }
     else if (!ret)
     	    ret = GNUSOCIAL_UNKNOWN_ERROR;
@@ -128,6 +129,7 @@ int gnusocial_post_status(gnusocial_session_t *session, char *msg)
             if (!ret && *session->xml) {
             	    session->status = calloc(1, sizeof(gnusocial_status_t));
             	    session->status[0] = parser_get_status(session->xml);
+            	    session->n_status = 1;
             }
             free(send);
             curl_free(encoded_msg);
