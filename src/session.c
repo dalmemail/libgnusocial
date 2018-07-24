@@ -46,6 +46,9 @@ void gnusocial_session_free(gnusocial_session_t *session)
 	if (session->xml)
 		free(session->xml);
 
+	if (session->source)
+		free(session->source);
+
 	free(session);
 }
 
@@ -84,4 +87,21 @@ void gnusocial_session_reset(gnusocial_session_t *session)
 	
 	if (session->xml)
 		free(session->xml);
+}
+
+void gnusocial_session_set_source(gnusocial_session_t *session, const char *source)
+{
+	if (session->source)
+		free(session->source);
+
+	session->source = calloc(1, MAX_SOURCE);
+	memcpy(session->source, source, MAX_SOURCE);
+}
+
+void gnusocial_session_remove_source(gnusocial_session_t *session)
+{
+	if (session->source)
+		free(session->source);
+
+	session->source = NULL;
 }
