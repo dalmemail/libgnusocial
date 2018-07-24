@@ -126,6 +126,21 @@ char *gnusocial_session_error(gnusocial_session_t *session);
 void gnusocial_session_reset(gnusocial_session_t *session);
 
 /**
+ * @brief Sets a given program name (string) as source for post requests to the GS API
+ * @param session Session structure to set the source in
+ * @param source String to be set (copied) as source in session
+ */
+
+void gnusocial_session_set_source(gnusocial_session_t *session, const char *source);
+
+/**
+ * @brief Frees source member of structure session (if it does not point to NULL)
+ * @param session Session structure to remove source
+ */
+
+void gnusocial_session_remove_source(gnusocial_session_t *session);
+
+/**
  * @brief Post a new notice as the authenticating user
  * @param session A session structure to authenticate the user into the server
  * @param msg String that contains the notice content to post
