@@ -103,6 +103,9 @@ int gnusocial_api_request(gnusocial_session_t *session, char *send, char *xml_do
 
     curl_easy_cleanup(curl);
 
+    if (!result && *session->xml && (session->errormsg = parser_get_error(session->xml)))
+    	    result = GNUSOCIAL_API_ERROR;
+
     return result;
 }
 

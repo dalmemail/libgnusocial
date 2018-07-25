@@ -39,8 +39,6 @@ int gnusocial_reply_status(gnusocial_session_t *session, int id, char *msg)
 				snprintf(send, amount, "in_reply_to_status_id=%d&status=%s", id, encoded_msg);
 
 			ret = gnusocial_api_request(session, send, "statuses/update.xml");
-			if (!ret && (session->errormsg = parser_get_error(session->xml)))
-				ret = GNUSOCIAL_API_ERROR;
 			if (!ret && *session->xml) {
 				session->status = calloc(1, sizeof(gnusocial_status_t));
 				session->status[0] = parser_get_status(session->xml);
@@ -57,30 +55,21 @@ int gnusocial_delete_status(gnusocial_session_t *session, int id)
 {
     char flags[16];
     snprintf(flags, sizeof(flags), "id=%d", id);
-    int ret = gnusocial_api_request(session, flags, "statuses/destroy.xml");
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
-    return ret;
+    return gnusocial_api_request(session, flags, "statuses/destroy.xml");
 }
 
 int gnusocial_favorite_status(gnusocial_session_t *session, int id)
 {
     char flags[16];
     snprintf(flags, sizeof(flags), "id=%d", id);
-    int ret = gnusocial_api_request(session, flags, "favorites/create.xml");
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
-    return ret;
+    return gnusocial_api_request(session, flags, "favorites/create.xml");
 }
 
 int gnusocial_unfavorite_status(gnusocial_session_t *session, int id)
 {
     char flags[16];
     snprintf(flags, sizeof(flags), "id=%d", id);
-    int ret = gnusocial_api_request(session, flags, "favorites/destroy.xml");
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
-    return ret;
+    return gnusocial_api_request(session, flags, "favorites/destroy.xml");
 }
 
 int gnusocial_repeat_status(gnusocial_session_t *session, int id, int code)
@@ -90,8 +79,6 @@ int gnusocial_repeat_status(gnusocial_session_t *session, int id, int code)
     char id_[32];
     snprintf(id_, sizeof(id_), "id=%d", id);
     int ret = gnusocial_api_request(session, id_, url);
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
     if (!ret && parseXml(session->xml, strlen(session->xml), "status", 6, NULL, 0) < 0) {
     	session->errormsg = calloc(1, GNUSOCIAL_ERROR_SIZE);
         snprintf(session->errormsg, GNUSOCIAL_ERROR_SIZE, "Trying to repeat ID '%d'\n", id);
@@ -105,8 +92,6 @@ int gnusocial_search_status(gnusocial_session_t *session, int id)
     char xml_doc[32];
     snprintf(xml_doc, sizeof(xml_doc), "statuses/show.xml&id=%d", id);
     int ret = gnusocial_api_request(session, NULL, xml_doc);
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
     if (!ret && *session->xml) {
     	    session->status = calloc(1, sizeof(gnusocial_status_t));
     	    session->status[0] = parser_get_status(session->xml);
@@ -133,8 +118,6 @@ int gnusocial_post_status(gnusocial_session_t *session, char *msg)
 				snprintf(send, amount, "status=%s", encoded_msg);
 
 			ret = gnusocial_api_request(session, send, "statuses/update.xml");
-			if (!ret && (session->errormsg = parser_get_error(session->xml)))
-				ret = GNUSOCIAL_API_ERROR;
 			if (!ret && *session->xml) {
 				session->status = calloc(1, sizeof(gnusocial_status_t));
 				session->status[0] = parser_get_status(session->xml);

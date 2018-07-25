@@ -38,19 +38,19 @@ static int check_account_credentials_length(char *protocol, char *user, char *se
 {
 	if (strlen(protocol) >= GNUSOCIAL_ACCOUNT_PROTOCOL_SIZE)
 		return GNUSOCIAL_ERROR_INVALID_PROTOCOL_SIZE;
-	
+
 	if (strlen(user) >= GNUSOCIAL_ACCOUNT_USERNAME_SIZE)
 		return GNUSOCIAL_ERROR_INVALID_USERNAME_SIZE;
-	
+
 	if (strlen(server) >= GNUSOCIAL_ACCOUNT_SERVER_SIZE)
 		return GNUSOCIAL_ERROR_INVALID_SERVER_SIZE;
-	
+
 	if (strlen(password) >= GNUSOCIAL_ACCOUNT_PASSWORD_SIZE)
 		return GNUSOCIAL_ERROR_INVALID_PASSWORD_SIZE;
-	
+
 	if (strlen(socks_proxy) >= GNUSOCIAL_ACCOUNT_PROXY_SIZE)
 		return GNUSOCIAL_ERROR_INVALID_PROXY_SIZE;
-	
+
 	return 0;
 }
 

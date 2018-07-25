@@ -20,31 +20,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define USER_GROUPS 0
-#define SERVER_GROUPS 1
-
-char timelines[2][64] = {"statusnet/groups/list.xml", "statusnet/groups/list_all.xml"};
-
 int gnusocial_join_group(gnusocial_session_t *session, int id)
 {
     char flags[16];
     snprintf(flags, sizeof(flags), "id=%d", id);
-    int ret = gnusocial_api_request(session, flags, "statusnet/groups/join.xml");
-    if (!ret)
-        if ((session->errormsg = parser_get_error(session->xml)))
-        	ret = GNUSOCIAL_API_ERROR;
-    return ret;
+    return gnusocial_api_request(session, flags, "statusnet/groups/join.xml");
 }
 
 int gnusocial_leave_group(gnusocial_session_t *session, int id)
 {
     char flags[16];
     snprintf(flags, sizeof(flags), "id=%d", id);
-    int ret = gnusocial_api_request(session, flags, "statusnet/groups/leave.xml");
-    if (!ret)
-        if ((session->errormsg = parser_get_error(session->xml)))
-        	ret = GNUSOCIAL_API_ERROR;
-    return ret;
+    return gnusocial_api_request(session, flags, "statusnet/groups/leave.xml");
 }
 
 int gnusocial_get_group_info(gnusocial_session_t *session, int id)
@@ -53,13 +40,9 @@ int gnusocial_get_group_info(gnusocial_session_t *session, int id)
     snprintf(flags, sizeof(flags), "id=%d", id);
     int ret = gnusocial_api_request(session, flags, "statusnet/groups/show.xml");
     if (!ret) {
-        if ((session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
-        else {
-        	session->groups = calloc(1, sizeof(gnusocial_group_info_t));
-        	session->groups[0] = parser_get_group_info(session->xml);
-        	session->n_groups = 1;
-        }
+       	session->groups = calloc(1, sizeof(gnusocial_group_info_t));
+       	session->groups[0] = parser_get_group_info(session->xml);
+        session->n_groups = 1;
     }
     return ret;
 }
@@ -73,9 +56,7 @@ int gnusocial_list_groups(gnusocial_session_t *session, int n_groups, char *time
         return ret;
     session->groups = calloc(n_groups, sizeof(gnusocial_group_info_t));
     session->n_groups = n_groups;
-    if ((session->errormsg = parser_get_error(session->xml)))
-    	    return GNUSOCIAL_API_ERROR;
-    else if (*session->xml) {
+    if (*session->xml) {
     	int xml_data_size = strlen(session->xml);
     	char *xml_data = session->xml;
         int start_status_point = 0;
@@ -112,11 +93,8 @@ int gnusocial_get_number_of_groups(gnusocial_session_t *session, const char *use
     	    return request_code;
 
     char n_groups[32];
-    if ((session->errormsg = parser_get_error(session->xml)))
-    	    return GNUSOCIAL_API_ERROR;
+    if (parseXml(session->xml, strlen(session->xml), "<groups_count>", 14, n_groups, 32) > 0)
+        return atoi(n_groups);
     else
-        if (parseXml(session->xml, strlen(session->xml), "<groups_count>", 14, n_groups, 32) > 0)
-        	return atoi(n_groups);
-        else
-        	return GNUSOCIAL_API_ERROR_TAG_NOT_FOUND;
+        return GNUSOCIAL_API_ERROR_TAG_NOT_FOUND;
 }

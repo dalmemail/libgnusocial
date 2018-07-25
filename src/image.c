@@ -84,9 +84,6 @@ int gnusocial_get_user_avatar(gnusocial_session_t *session, char *username,
     snprintf(flags, sizeof(flags), "screen_name=%s", username);
     int ret = gnusocial_api_request(session, flags, "users/show.xml");
 
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	ret = GNUSOCIAL_API_ERROR;
-
     if (!ret) {
     	char avatar_url[MAX_URL];
         if (parseXml(session->xml, strlen(session->xml),
@@ -104,9 +101,6 @@ int gnusocial_get_follow_avatar(gnusocial_session_t *session, char *username,
     char flags[32];
     snprintf(flags, sizeof(flags), "count=%d", 99999);
     int ret = gnusocial_api_request(session, flags, GNUSOCIAL_FRIENDS_LIST);
-
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
 
     if (!ret && *session->xml) {
         char screen_name[64];

@@ -29,8 +29,6 @@ int gnusocial_read_timeline(gnusocial_session_t *session,
     char flags[32];
     snprintf(flags, sizeof(flags), "count=%d", n_status);
     int ret = gnusocial_api_request(session, flags, timeline);
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
 
     if (!ret && *session->xml) {
         int i;

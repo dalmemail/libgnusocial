@@ -34,9 +34,6 @@ int gnusocial_export_users(gnusocial_session_t *session, char *filename)
     snprintf(count, 32, "count=%d", 99999);
     int ret = gnusocial_api_request(session,count,source);
 
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
-
     if (ret)
     	    return ret;
 
@@ -78,18 +75,12 @@ int gnusocial_follow_user(gnusocial_session_t *session, char *screen_name)
 {
     char flags[64];
     snprintf(flags, sizeof(flags), "screen_name=%s", screen_name);
-    int ret = gnusocial_api_request(session, flags, "friendships/create.xml");
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
-
-    return ret;
+    return gnusocial_api_request(session, flags, "friendships/create.xml");
 }
 
 int gnusocial_get_user_info(gnusocial_session_t *session, char *source)
 {
     int ret = gnusocial_api_request(session, source, "users/show.xml");
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
 
     if (!ret) {
     	    session->accounts = calloc(1, sizeof(gnusocial_account_info_t));
@@ -171,9 +162,5 @@ int gnusocial_unfollow_user(gnusocial_session_t *session, char *screen_name)
 {
     char flags[64];
     snprintf(flags, sizeof(flags), "screen_name=%s", screen_name);
-    int ret = gnusocial_api_request(session, flags, "friendships/destroy.xml");
-    if (!ret && (session->errormsg = parser_get_error(session->xml)))
-    	    ret = GNUSOCIAL_API_ERROR;
-
-    return ret;
+    return gnusocial_api_request(session, flags, "friendships/destroy.xml");
 }
