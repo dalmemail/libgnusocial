@@ -57,7 +57,7 @@ char *gnusocial_session_xml(gnusocial_session_t *session)
 	return session->xml;
 }
 
-char *gnusocial_session_error(gnusocial_session_t *session)
+char *gnusocial_session_error_reason(gnusocial_session_t *session)
 {
 	return session->errormsg;
 }

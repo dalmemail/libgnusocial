@@ -111,12 +111,12 @@ void gnusocial_session_free(gnusocial_session_t *session);
 char *gnusocial_session_xml(gnusocial_session_t *session);
 
 /**
- * @brief Returns a curl or GNUsocial API error message
+ * @brief Returns an exact cURL or GNUsocial API error message
  * @param session gnusocial_session_t where the error took place
  * @return A pointer to the error message (string)
  */
 
-char *gnusocial_session_error(gnusocial_session_t *session);
+char *gnusocial_session_error_reason(gnusocial_session_t *session);
 
 /**
  * @brief Resets the gnusocial session data from a request, usually to make a new request
@@ -361,5 +361,13 @@ int gnusocial_get_user_avatar(gnusocial_session_t *session, char *username,
  */
 int gnusocial_get_follow_avatar(gnusocial_session_t *session, char *username,
                          char *avatar_filename);
+
+/**
+ * @brief Returns a general error string that matches a given error code
+ * @param error_code Error code to find the error string
+ * @return A pointer to a const-char error string
+ */
+
+const char *gnusocial_get_error(int error_code);
 
 #endif
