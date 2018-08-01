@@ -1,0 +1,212 @@
+.TH libgnusocial 1 "05 Jan 2018" "" "libgnusocial Library Reference Manual"
+
+.SH NAME
+libgnusocial \- C/C++ library for interacting with GNU Social servers
+
+.SH "DESCRIPTION"
+
+This library can be used to integrate GNU Social with other applications. It is based upon the functions from GnuSocialShell by Dan Rulos.
+
+.SH "INSTALLATION"
+
+On Debian based systems:
+
+    sudo apt-get install curl libcurl4-openssl-dev
+
+On Arch/Parabola
+
+    sudo pacman -S curl
+
+Then clone the repo, build and install it.
+
+    git clone https://code.freedombone.net/bashrc/libgnusocial
+    cd libgnusocial
+    make
+    sudo make install
+
+.SH "EXAMPLES"
+
+To show your profile information:
+
+    #include <stdio.h>
+    #include <gnusocial.h>
+    int main(int argc, char **argv)
+    {
+        gnusocial_account_t acc;
+        gnusocial_account_info_t info;
+        int result = 1;
+        gs_init_account(&acc, "https", "username", "domain_name", "password", NULL);
+        if (gs_verify_account(acc) == -1) return 1;
+        info = gs_get_my_account_info(acc, &result);
+        if (!result) {
+            printf("Name: %s\\nNick: %s\\nLocation: %s\\nDescription: %s\\n" \\
+               "Web: %s\\nFollowers: %d\\nFriends: %d\\n",
+               (char*)info.name, (char*)info.screen_name,
+               (char*)info.location, (char*)info.description,
+               (char*)info.url, info.followers, info.friends);
+        }
+        return 0;
+    }
+
+To publish a post:
+
+    #include <stdio.h>
+    #include <gnusocial.h>
+    int main(int argc, char **argv)
+    {
+        gnusocial_account_t acc;
+        gs_init_account(&acc, "https", "username", "domain_name", "password", NULL);
+        if (gs_verify_account(acc) == -1) return 1;
+        gs_send_status(acc, "g'day world!");
+        return 0;
+    }
+
+To read the last few posts in your home timeline. You can also use the constant
+.B PUBLIC_TIMELINE
+to show all posts from the server rather than just the ones associated with your account.
+
+    #include <stdio.h>
+    #include <gnusocial.h>
+    int main(int argc, char **argv)
+    {
+        gnusocial_account_t acc;
+        gnusocial_status_t * posts;
+        const int no_of_posts = 5;
+        int i;
+        gs_init_account(&acc, "https", "username", "domain_name", "password", NULL);
+        if (gs_verify_account(acc) == -1) return 1;
+        posts = gs_read_timeline(acc, HOME_TIMELINE, no_of_posts);
+        for (i = 0; i < no_of_posts; i++) {
+            printf("[ID: %d] [%s] [%s] %s\\n",
+               posts[i].id, posts[i].date,
+               posts[i].author_screen_name, (char*)posts[i].text);
+        }
+        return 0;
+    }
+
+To list your friend subscriptions:
+
+    #include <stdio.h>
+    #include <gnusocial.h>
+    int main(int argc, char **argv)
+    {
+        gnusocial_account_t acc;
+        if (argc < 2) {
+            printf("No username given\n");
+            return 1;
+        }
+        if (argc < 3) {
+            printf("No gnusocial domain name given\n");
+            return 2;
+        }
+        if (argc < 4) {
+            printf("No gnusocial password given\n");
+            return 3;
+        }
+        gs_init_account(&acc, "https", argv[1], argv[2], argv[3], NULL);
+        if (gs_verify_account(acc) == -1) return 4;
+        char count[32];
+        int n_users = 9999;
+        snprintf(count, 32, "count=%d", n_users);
+        char *xml_data = gs_send_to_api(acc,count,"statuses/friends.xml");
+        int xml_data_size = strlen(xml_data);
+        char error[512];
+        if (gs_parseXml(xml_data, xml_data_size, "<error>", 7, error, 512) > 0) {
+            printf("Error: %s\n", error);
+        }
+        else if (xml_data_size > 0) {
+            char name[64];
+            char screen_name[64];
+            char url[128];
+            int start_status_point = 0;
+            int real_status_point = 0;
+            char *array_data;
+            array_data = &xml_data[0];
+            int i;
+            for (i = 0; i < n_users && (real_status_point+13) < xml_data_size; i++) {
+                gs_parseXml(array_data, (xml_data_size-real_status_point), "<name>", 6, name, 64);
+                gs_parseXml(array_data, (xml_data_size-real_status_point), "<screen_name>", 13, screen_name, 64);
+                gs_parseXml(array_data, (xml_data_size-real_status_point), "<ostatus_uri>", 13, url, 128);
+                start_status_point = gs_parseXml(array_data, (xml_data_size-real_status_point), "</user>", 7, "", 0);
+                printf("%s,%s,%s\n", name, screen_name, url);
+                real_status_point += start_status_point;
+                array_data = &xml_data[real_status_point];
+            }
+        }
+        else {
+            printf("Error: Reading %d users from '%s://%s/api/%s'\n", n_users, acc.protocol, acc.server, source);
+        }
+        free(xml_data);
+        return 0;
+    }
+
+Compile with:
+
+    gcc -Wall -std=gnu99 -pedantic -O3 -o test *.c -I/usr/local/include/libgnusocial -lcurl -lgnusocial
+
+For a complete list of functions available see the section below.
+
+.SH "FUNCTIONS"
+
+gnusocial_account_info_t gs_get_my_account_info(gnusocial_account_t account, int *result);
+
+void gs_send_status(gnusocial_account_t account, char *msg);
+
+void gs_favorite(gnusocial_account_t account, int id);
+
+void gs_unfavorite(gnusocial_account account_t, int id);
+
+gnusocial_status_t gs_search_by_id(gnusocial_account_t account, int id, int *result);
+
+void gs_delete_status_by_id(gnusocial_account_t account, int id);
+
+void gs_answer_status_by_id(gnusocial_account_t account, int id, char *msg);
+
+gnusocial_status_t *gs_read_timeline(gnusocial_account_t account, char *timeline, int n_status);
+
+void gs_retweet(gnusocial_account_t account, int id, int code);
+
+gnusocial_account_info_t gs_get_user_info(gnusocial_account_t account, char *source);
+
+int gs_verify_account(gnusocial_account_t account);
+
+gnusocial_group_info_t gs_get_group_info(gnusocial_account_t account, int id);
+
+void gs_join_group(gnusocial_account_t account, int id);
+
+void gs_leave_group(gnusocial_account_t account, int id);
+
+gnusocial_little_group_info_t *gs_list_groups(gnusocial_account_t account, int n_groups, int group_timeline);
+
+void gs_follow_user(gnusocial_account_t account, char *screen_name);
+
+void gs_unfollow_user(gnusocial_account_t account, char *screen_name);
+
+gnusocial_status_t gs_makeStatusFromRawSource(char *raw_data, int data_size);
+
+int gs_parseXml(char *xml_data, int xml_data_size, char *tofind, int tofind_size, char *output, int output_size);
+
+char *gs_send_to_api(gnusocial_account_t account, char *send, char *xml_doc);
+
+int gs_FindXmlError(char *xml_data, int xml_data_size);
+
+int gs_get_number_of_groups(gnusocial_account_t account);
+
+void gs_init_account(gnusocial_account_t * acc, char * protocol,
+                     char * user, char * server, char * password,
+                     char * socks_proxy);
+
+void gs_export_users(gnusocial_account_t account, char *filename);
+
+void gs_import_users(gnusocial_account_t account, char *filename);
+
+int gs_get_user_avatar(gnusocial_account_t account, char * username, char * avatar_filename);
+
+int gs_get_follow_avatar(gnusocial_account_t account, char * username, char * avatar_filename);
+
+.SH "BUGS"
+Report bugs at
+.B https://code.freedombone.net/bashrc/libgnusocial/issues or via email.
+
+.SH "AUTHOR"
+Bob Mottram <bob@freedombone.net>
