@@ -111,7 +111,7 @@ int gnusocial_api_request(gnusocial_session_t *session, char *send, char *xml_do
 
 int gnusocial_verify_account(gnusocial_session_t *session)
 {
-    int ret = gnusocial_api_request(session, NULL, "account/verify_credentials.xml");
+    int ret = gnusocial_api_request(session, NULL, GNUSOCIAL_API_RESOURCE_VERIFY_CREDENTIALS);
     if ((session->errormsg = parser_get_error(session->xml)))
     	    ret = GNUSOCIAL_API_ERROR;
     // Temporal until we found if this is needed

@@ -23,6 +23,20 @@
 #define GNUSOCIAL_FOLLOWERS_LIST "statuses/followers.xml"
 #define GNUSOCIAL_FRIENDS_LIST "statuses/friends.xml"
 
+#define GNUSOCIAL_API_RESOURCE_VERIFY_CREDENTIALS "account/verify_credentials.xml"
+#define GNUSOCIAL_API_RESOURCE_SERVER_VERSION "statusnet/version.xml"
+#define GNUSOCIAL_API_RESOURCE_JOIN_GROUP "statusnet/groups/join.xml"
+#define GNUSOCIAL_API_RESOURCE_LEAVE_GROUP "statusnet/groups/leave.xml"
+#define GNUSOCIAL_API_RESOURCE_SHOW_GROUP "statusnet/groups/show.xml"
+#define GNUSOCIAL_API_RESOURCE_SHOW_USER "users/show.xml"
+#define GNUSOCIAL_API_RESOURCE_UPDATE_STATUS "statuses/update.xml"
+#define GNUSOCIAL_API_RESOURCE_DESTROY_STATUS "statuses/destroy.xml"
+#define GNUSOCIAL_API_RESOURCE_CREATE_FAVORITE "favorites/create.xml"
+#define GNUSOCIAL_API_RESOURCE_DESTROY_FAVORITE "favorites/destroy.xml"
+#define GNUSOCIAL_API_RESOURCE_SHOW_STATUS "statuses/show.xml"
+#define GNUSOCIAL_API_RESOURCE_CREATE_FRIENDSHIP "friendships/create.xml"
+#define GNUSOCIAL_API_RESOURCE_DESTROY_FRIENDSHIP "friendships/destroy.xml"
+
 #define MAX_ACCOUNT_NAME 64
 #define MAX_SCREEN_NAME 192
 #define MAX_LOCATION 192

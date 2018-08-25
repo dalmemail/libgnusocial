@@ -24,21 +24,21 @@ int gnusocial_join_group(gnusocial_session_t *session, int id)
 {
     char flags[16];
     snprintf(flags, sizeof(flags), "id=%d", id);
-    return gnusocial_api_request(session, flags, "statusnet/groups/join.xml");
+    return gnusocial_api_request(session, flags, GNUSOCIAL_API_RESOURCE_JOIN_GROUP);
 }
 
 int gnusocial_leave_group(gnusocial_session_t *session, int id)
 {
     char flags[16];
     snprintf(flags, sizeof(flags), "id=%d", id);
-    return gnusocial_api_request(session, flags, "statusnet/groups/leave.xml");
+    return gnusocial_api_request(session, flags, GNUSOCIAL_API_RESOURCE_LEAVE_GROUP);
 }
 
 int gnusocial_get_group_info(gnusocial_session_t *session, int id)
 {
     char flags[16];
     snprintf(flags, sizeof(flags), "id=%d", id);
-    int ret = gnusocial_api_request(session, flags, "statusnet/groups/show.xml");
+    int ret = gnusocial_api_request(session, flags, GNUSOCIAL_API_RESOURCE_SHOW_GROUP);
     if (!ret) {
        	session->groups = calloc(1, sizeof(gnusocial_group_info_t));
        	session->groups[0] = parser_get_group_info(session->xml);
@@ -88,7 +88,7 @@ int gnusocial_get_number_of_groups(gnusocial_session_t *session, const char *use
 {
     char flags[128];
     snprintf(flags, sizeof(flags), "&screen_name=%s", username);
-    int request_code = gnusocial_api_request(session, flags, "users/show.xml");
+    int request_code = gnusocial_api_request(session, flags, GNUSOCIAL_API_RESOURCE_SHOW_USER);
     if (request_code < 0)
     	    return request_code;
 

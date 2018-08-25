@@ -75,12 +75,12 @@ int gnusocial_follow_user(gnusocial_session_t *session, char *screen_name)
 {
     char flags[64];
     snprintf(flags, sizeof(flags), "screen_name=%s", screen_name);
-    return gnusocial_api_request(session, flags, "friendships/create.xml");
+    return gnusocial_api_request(session, flags, GNUSOCIAL_API_RESOURCE_CREATE_FRIENDSHIP);
 }
 
 int gnusocial_get_user_info(gnusocial_session_t *session, char *source)
 {
-    int ret = gnusocial_api_request(session, source, "users/show.xml");
+    int ret = gnusocial_api_request(session, source, GNUSOCIAL_API_RESOURCE_SHOW_USER);
 
     if (!ret) {
     	    session->accounts = calloc(1, sizeof(gnusocial_account_info_t));
@@ -119,7 +119,7 @@ void gnusocial_import_users(gnusocial_session_t *session, char *filename)
             i++;
 
             snprintf(send, 255, "ostatus_uri=%s", (char*)&line[i]);
-            /*ret = */gnusocial_api_request(session, send, "friendships/create.xml");
+            /*ret = */gnusocial_api_request(session, send, GNUSOCIAL_API_RESOURCE_CREATE_FRIENDSHIP);
             //FindXmlError(xml_data, strlen(xml_data));
         }
 
@@ -162,5 +162,5 @@ int gnusocial_unfollow_user(gnusocial_session_t *session, char *screen_name)
 {
     char flags[64];
     snprintf(flags, sizeof(flags), "screen_name=%s", screen_name);
-    return gnusocial_api_request(session, flags, "friendships/destroy.xml");
+    return gnusocial_api_request(session, flags, GNUSOCIAL_API_RESOURCE_DESTROY_FRIENDSHIP);
 }

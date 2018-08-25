@@ -38,7 +38,7 @@ int gnusocial_reply_status(gnusocial_session_t *session, int id, char *msg)
 			else
 				snprintf(send, amount, "in_reply_to_status_id=%d&status=%s", id, encoded_msg);
 
-			ret = gnusocial_api_request(session, send, "statuses/update.xml");
+			ret = gnusocial_api_request(session, send, GNUSOCIAL_API_RESOURCE_UPDATE_STATUS);
 			if (!ret && *session->xml) {
 				session->status = calloc(1, sizeof(gnusocial_status_t));
 				session->status[0] = parser_get_status(session->xml);
@@ -55,21 +55,21 @@ int gnusocial_delete_status(gnusocial_session_t *session, int id)
 {
     char flags[16];
     snprintf(flags, sizeof(flags), "id=%d", id);
-    return gnusocial_api_request(session, flags, "statuses/destroy.xml");
+    return gnusocial_api_request(session, flags, GNUSOCIAL_API_RESOURCE_DESTROY_STATUS);
 }
 
 int gnusocial_favorite_status(gnusocial_session_t *session, int id)
 {
     char flags[16];
     snprintf(flags, sizeof(flags), "id=%d", id);
-    return gnusocial_api_request(session, flags, "favorites/create.xml");
+    return gnusocial_api_request(session, flags, GNUSOCIAL_API_RESOURCE_CREATE_FAVORITE);
 }
 
 int gnusocial_unfavorite_status(gnusocial_session_t *session, int id)
 {
     char flags[16];
     snprintf(flags, sizeof(flags), "id=%d", id);
-    return gnusocial_api_request(session, flags, "favorites/destroy.xml");
+    return gnusocial_api_request(session, flags, GNUSOCIAL_API_RESOURCE_DESTROY_FAVORITE);
 }
 
 int gnusocial_repeat_status(gnusocial_session_t *session, int id, int code)
@@ -117,7 +117,7 @@ int gnusocial_post_status(gnusocial_session_t *session, char *msg)
 			else
 				snprintf(send, amount, "status=%s", encoded_msg);
 
-			ret = gnusocial_api_request(session, send, "statuses/update.xml");
+			ret = gnusocial_api_request(session, send, GNUSOCIAL_API_RESOURCE_UPDATE_STATUS);
 			if (!ret && *session->xml) {
 				session->status = calloc(1, sizeof(gnusocial_status_t));
 				session->status[0] = parser_get_status(session->xml);

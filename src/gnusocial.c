@@ -24,7 +24,7 @@
 int gnusocial_server_version(gnusocial_session_t *session, char *version,
 			unsigned int version_size)
 {
-    int result = gnusocial_api_request(session, NULL, "statusnet/version.xml");
+    int result = gnusocial_api_request(session, NULL, GNUSOCIAL_API_RESOURCE_SERVER_VERSION);
     if (!result && (session->errormsg = parser_get_error(session->xml)))
     	    result = GNUSOCIAL_API_ERROR;
     else if (!result)

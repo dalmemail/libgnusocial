@@ -82,7 +82,7 @@ int gnusocial_get_user_avatar(gnusocial_session_t *session, char *username,
 {
     char flags[256];
     snprintf(flags, sizeof(flags), "screen_name=%s", username);
-    int ret = gnusocial_api_request(session, flags, "users/show.xml");
+    int ret = gnusocial_api_request(session, flags, GNUSOCIAL_API_RESOURCE_SHOW_USER);
 
     if (!ret) {
     	char avatar_url[MAX_URL];
