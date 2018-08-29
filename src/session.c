@@ -17,6 +17,7 @@
 
 #include <stdlib.h>
 #include "gnusocial.h"
+#include "mem.h"
 
 gnusocial_session_t *gnusocial_session_create(void)
 {
@@ -28,28 +29,15 @@ void gnusocial_session_free(gnusocial_session_t *session)
 	if (!session)
 		return;
 
-	if (session->account)
-		free(session->account);
+	xfree(session->account);
+	xfree(session->status);
+	xfree(session->groups);
+	xfree(session->accounts);
+	xfree(session->errormsg);
+	xfree(session->xml);
+	xfree(session->source);
 
-	if (session->status)
-		free(session->status);
-
-	if (session->groups)
-		free(session->groups);
-
-	if (session->accounts)
-		free(session->accounts);
-	
-	if (session->errormsg)
-		free(session->errormsg);
-	
-	if (session->xml)
-		free(session->xml);
-
-	if (session->source)
-		free(session->source);
-
-	free(session);
+	xfree(session);
 }
 
 char *gnusocial_session_xml(gnusocial_session_t *session)
@@ -66,33 +54,20 @@ void gnusocial_session_reset(gnusocial_session_t *session)
 {
 	if (!session)
 		return;
-	
-	if (session->status) {
-		free(session->status);
-		session->n_status = 0;
-	}
-	
-	if (session->groups) {
-		free(session->groups);
-		session->n_groups = 0;
-	}
 
-	if (session->accounts) {
-		free(session->accounts);
-		session->n_accounts = 0;
-	}
-	
-	if (session->errormsg)
-		free(session->errormsg);
-	
-	if (session->xml)
-		free(session->xml);
+	xfree(session->status);
+	session->n_status = 0;
+	xfree(session->groups);
+	session->n_groups = 0;
+	xfree(session->accounts);
+	session->n_accounts = 0;
+	xfree(session->errormsg);
+	xfree(session->xml);
 }
 
 void gnusocial_session_set_source(gnusocial_session_t *session, const char *source)
 {
-	if (session->source)
-		free(session->source);
+	xfree(session->source);
 
 	session->source = calloc(1, MAX_SOURCE);
 	memcpy(session->source, source, MAX_SOURCE);
@@ -100,8 +75,7 @@ void gnusocial_session_set_source(gnusocial_session_t *session, const char *sour
 
 void gnusocial_session_remove_source(gnusocial_session_t *session)
 {
-	if (session->source)
-		free(session->source);
+		xfree(session->source);
 
 	session->source = NULL;
 }
